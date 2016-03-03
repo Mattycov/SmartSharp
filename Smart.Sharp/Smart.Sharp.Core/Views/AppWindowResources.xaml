@@ -1,0 +1,30 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Smart.Sharp.Core.Views">
+    
+    <Style x:Key="TabControlStyle" TargetType="{x:Type TabControl}">
+        <Setter Property="TabStripPlacement" Value="Left"/>
+        <Setter Property="Background" Value="{StaticResource GrayCyanLightBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource NavyDarkBrush}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    
+    <Style x:Key="TabItemStyle" TargetType="{x:Type TabItem}">
+        <Setter Property="Background" Value="{StaticResource CyanLightBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource GrayCyanLightBrush}"/>
+    </Style>
+    
+    <ControlTemplate x:Key="RootControlTemplate">
+        <Grid>
+            <TabControl Style="{StaticResource TabControlStyle}">
+                <TabItem Style="{StaticResource TabItemStyle}" Template="{StaticResource SettingsTabItemControlTemplate}">
+                    
+                </TabItem>
+                <TabItem Style="{StaticResource TabItemStyle}" Template="{StaticResource SettingsTabItemControlTemplate}">
+
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </ControlTemplate>
+    
+</ResourceDictionary>

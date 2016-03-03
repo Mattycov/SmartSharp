@@ -1,0 +1,15 @@
+﻿<Application x:Class="Smart.Sharp.Core.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Smart.Sharp.Core">
+    <Application.Resources>
+         <ResourceDictionary>
+             <ResourceDictionary.MergedDictionaries>
+                 <ResourceDictionary Source="Views/ColourPalette.xaml"/>
+                 <ResourceDictionary Source="Views/IconResources.xaml"/>
+                 <ResourceDictionary Source="Views/SettingViews/SettingsViewResources.xaml"/>
+                 <ResourceDictionary Source="Views/AppWindowResources.xaml"/>
+             </ResourceDictionary.MergedDictionaries>
+         </ResourceDictionary>
+    </Application.Resources>
+</Application>

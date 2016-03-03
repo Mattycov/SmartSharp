@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F33ACF97-A59E-464F-8EFF-67989F0BB7FE}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{03E9E3EC-49EA-4C53-8992-71FEC064D219}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Smart.Sharp.Cli</RootNamespace>
-    <AssemblyName>Smart.Sharp.Cli</AssemblyName>
+    <RootNamespace>Smart.Sharp.Native</RootNamespace>
+    <AssemblyName>Smart.Sharp.Native</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -35,35 +35,16 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="Kernel32.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Smart.Sharp.Native\Smart.Sharp.Native.csproj">
-      <Project>{03E9E3EC-49EA-4C53-8992-71FEC064D219}</Project>
-      <Name>Smart.Sharp.Native</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Smart.Sharp\Smart.Sharp.csproj">
-      <Project>{03e9e3ec-49ea-4c53-8992-71fec064d219}</Project>
-      <Name>Smart.Sharp</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
+    <Compile Include="SmartRemote.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
