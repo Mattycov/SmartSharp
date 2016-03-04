@@ -115,8 +115,7 @@ namespace Smart.Sharp.Native
 
     #region fields
 
-    private readonly IntPtr _hModule;
-    private readonly string _path;
+    private readonly IntPtr hModule;
 
     #endregion
 
@@ -163,13 +162,12 @@ namespace Smart.Sharp.Native
 
     public SmartRemote(string path)
     {
-      _path = path;
-      string dllPath = Path.Combine(_path, "libsmartremote32.dll");
+      string dllPath = Path.Combine(path, "libsmartremote32.dll");
       if (!File.Exists(Path.Combine(dllPath)))
         throw new Exception("Could not locate libsmartremote32.dll");
 
-      _hModule = Kernel32.LoadLibrary(dllPath);
-      if (_hModule == IntPtr.Zero)
+      hModule = Kernel32.LoadLibrary(dllPath);
+      if (hModule == IntPtr.Zero)
         throw new Exception("Could not load libsmartremote32.dll");
 
       LoadSmartMethods();
@@ -181,97 +179,97 @@ namespace Smart.Sharp.Native
 
     private void LoadSmartMethods()
     {
-      IntPtr functionAddress = Kernel32.GetProcAddress(_hModule, "exp_getClients");
+      IntPtr functionAddress = Kernel32.GetProcAddress(hModule, "exp_getClients");
       GetClients = Marshal.GetDelegateForFunctionPointer<GetClientsDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_getAvailablePID");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_getAvailablePID");
       GetAvailablePID = Marshal.GetDelegateForFunctionPointer<GetAvailablePIDDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_killClient");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_killClient");
       KillClient = Marshal.GetDelegateForFunctionPointer<KillClientDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_spawnClient");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_spawnClient");
       SpawnClient = Marshal.GetDelegateForFunctionPointer<SpawnClientDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_pairClient");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_pairClient");
       PairClient = Marshal.GetDelegateForFunctionPointer<PairClientDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_getClientPID");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_getClientPID");
       GetClientPID = Marshal.GetDelegateForFunctionPointer< GetClientPIDDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_freeClient");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_freeClient");
       FreeClient = Marshal.GetDelegateForFunctionPointer<FreeClientDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_getImageArray");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_getImageArray");
       GetImageArray = Marshal.GetDelegateForFunctionPointer<GetImageArrayDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_getDebugArray");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_getDebugArray");
       GetDebugArray = Marshal.GetDelegateForFunctionPointer<GetDebugArrayDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_getRefresh");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_getRefresh");
       GetRefresh = Marshal.GetDelegateForFunctionPointer<GetRefreshDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_setRefresh");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_setRefresh");
       SetRefresh = Marshal.GetDelegateForFunctionPointer<SetRefreshDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_setTransparentColor");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_setTransparentColor");
       SetTransparentColor = Marshal.GetDelegateForFunctionPointer<SetTransparentColorDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_setGraphics");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_setGraphics");
       SetGraphics = Marshal.GetDelegateForFunctionPointer<SetGraphicsDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_setEnabled");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_setEnabled");
       SetEnabled = Marshal.GetDelegateForFunctionPointer<SetEnabledDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_isActive");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_isActive");
       IsActive = Marshal.GetDelegateForFunctionPointer<IsActiveDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_getMousePos");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_getMousePos");
       GetMousePos = Marshal.GetDelegateForFunctionPointer<GetMousePosDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_holdMouse");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_holdMouse");
       HoldMouse = Marshal.GetDelegateForFunctionPointer<HoldMouseDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_releaseMouse");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_releaseMouse");
       ReleaseMouse = Marshal.GetDelegateForFunctionPointer<ReleaseMouseDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_holdMousePlus");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_holdMousePlus");
       HoldMousePlus = Marshal.GetDelegateForFunctionPointer<HoldMousePlusDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_releaseMousePlus");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_releaseMousePlus");
       ReleaseMousePlus = Marshal.GetDelegateForFunctionPointer<ReleaseMousePlusDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_moveMouse");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_moveMouse");
       MoveMouse = Marshal.GetDelegateForFunctionPointer<MoveMouseDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_windMouse");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_windMouse");
       WindMouse = Marshal.GetDelegateForFunctionPointer<WindMouseDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_clickMouse");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_clickMouse");
       ClickMouse = Marshal.GetDelegateForFunctionPointer<ClickMouseDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_clickMousePlus");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_clickMousePlus");
       ClickMousePlus = Marshal.GetDelegateForFunctionPointer<ClickMousePlusDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_isMouseButtonHeld");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_isMouseButtonHeld");
       IsMouseButtonHeld = Marshal.GetDelegateForFunctionPointer<IsMouseButtonHeldDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_scrollMouse");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_scrollMouse");
       ScrollMouse = Marshal.GetDelegateForFunctionPointer<ScrollMouseDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_sendKeys");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_sendKeys");
       SendKeys = Marshal.GetDelegateForFunctionPointer<SendKeysDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_holdKey");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_holdKey");
       HoldKey = Marshal.GetDelegateForFunctionPointer<HoldKeyDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_releaseKey");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_releaseKey");
       ReleaseKey = Marshal.GetDelegateForFunctionPointer<ReleaseKeyDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_isKeyDown");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_isKeyDown");
       IsKeyDown = Marshal.GetDelegateForFunctionPointer<IsKeyDownDelegate>(functionAddress);
 
-      functionAddress = Kernel32.GetProcAddress(_hModule, "exp_setCapture");
+      functionAddress = Kernel32.GetProcAddress(hModule, "exp_setCapture");
       SetCapture = Marshal.GetDelegateForFunctionPointer<SetCaptureDelegate>(functionAddress);
     }
 
@@ -281,9 +279,10 @@ namespace Smart.Sharp.Native
 
     public void Dispose()
     {
-      Kernel32.FreeLibrary(_hModule);
+      Kernel32.FreeLibrary(hModule);
     }
 
     #endregion
+
   }
 }

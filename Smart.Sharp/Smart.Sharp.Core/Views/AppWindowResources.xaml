@@ -17,11 +17,11 @@
     <ControlTemplate x:Key="RootControlTemplate">
         <Grid>
             <TabControl Style="{StaticResource TabControlStyle}">
-                <TabItem Style="{StaticResource TabItemStyle}" Template="{StaticResource SettingsTabItemControlTemplate}">
-                    
+                <TabItem Style="{StaticResource TabItemStyle}" Template="{StaticResource BotsTabItemControlTemplate}">
+
                 </TabItem>
                 <TabItem Style="{StaticResource TabItemStyle}" Template="{StaticResource SettingsTabItemControlTemplate}">
-
+                    
                 </TabItem>
             </TabControl>
         </Grid>

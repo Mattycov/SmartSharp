@@ -20,7 +20,6 @@ namespace Smart.Sharp.Core
     internal static string ScreenshotFolderPath { get; private set; }
 
     internal static string SmartFolderPath { get; private set; }
-    
 
     internal static void PreStartUp()
     {

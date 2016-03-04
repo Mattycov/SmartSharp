@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Net.Configuration;
 using System.Runtime.InteropServices;
+using Smart.Sharp.Engine;
 using Smart.Sharp.Native;
 
 namespace Smart.Sharp.Cli
@@ -21,40 +23,24 @@ namespace Smart.Sharp.Cli
       javaPath = Path.Combine(javaPath, "bin", "java.exe");
       string smartRemotePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "smart");
 
-      SmartRemote smartRemote = new SmartRemote(smartRemotePath);
+      SmartRemote remote = new SmartRemote(smartRemotePath);
 
-      //IntPtr smart = smartRemote.SpawnClient(javaPath, smartRemotePath, "http://world37.runescape.com/", "", 800, 600, null, null, null, null);
-      IntPtr smart = smartRemote.SpawnClient(javaPath, smartRemotePath,
-        "http://oldschool81.runescape.com/", "", 800, 600, null, null, null, null);
+      SessionSettings settings = new SessionSettings();
+      settings.SessionType = SessionType.OldSchool;
+      settings.JavaPath = javaPath;
+      settings.SmartPath = smartRemotePath;
 
-      bool loop = true;
-      while (loop)
-      {
+      Session session  = new Session(remote, settings);
 
-        Console.WriteLine("Press any key to save client image, or Space to quit...");
-        ConsoleKeyInfo info = Console.ReadKey();
-        if (info.Key == ConsoleKey.Spacebar)
-        {
-          loop = false;
-          continue;
-        }
+      Console.WriteLine("Press any key to quit...");
+      Console.ReadKey();
 
-        IntPtr bitmapPtr = smartRemote.GetImageArray(smart);
-        if (bitmapPtr == IntPtr.Zero)
-        {
-          Console.WriteLine("Could not grad client image, exiting!");
-          loop = false;
-          continue;
-        }
+      bool quitSafely = session.Stop();
 
-        SaveIntPtrToBitmap(bitmapPtr);
-      }
-
-      bool ret = smartRemote.KillClient(smartRemote.GetClientPID(smart));
-
-      Console.WriteLine("SMART shutdown: " + ret);
+      Console.WriteLine($"Session ended: {quitSafely}");
       Console.WriteLine("Press any key to continue...");
       Console.ReadKey();
+
     }
 
     private static void SaveIntPtrToBitmap(IntPtr ptr)

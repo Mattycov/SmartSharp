@@ -32,6 +32,26 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -46,11 +66,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Smart.Sharp.Engine\Smart.Sharp.Engine.csproj">
+      <Project>{2E061909-8E2D-49E8-8EF4-E5B329DBC6E0}</Project>
+      <Name>Smart.Sharp.Engine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Smart.Sharp.Native\Smart.Sharp.Native.csproj">
       <Project>{03E9E3EC-49EA-4C53-8992-71FEC064D219}</Project>
       <Name>Smart.Sharp.Native</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Smart.Sharp\Smart.Sharp.csproj">
+    <ProjectReference Include="..\Smart.Sharp.Native\Smart.Sharp.Native.csproj">
       <Project>{03e9e3ec-49ea-4c53-8992-71fec064d219}</Project>
       <Name>Smart.Sharp</Name>
     </ProjectReference>
