@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Smart.Sharp.Core</RootNamespace>
-    <AssemblyName>Smart.Sharp.Core</AssemblyName>
+    <AssemblyName>SMARTSharp</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -40,6 +40,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -66,6 +67,14 @@
     <Compile Include="Boot.cs" />
     <Compile Include="Controller\AppController.cs" />
     <Compile Include="Controller\IAppController.cs" />
+    <Compile Include="Helpers\PanelLayoutHelper.cs" />
+    <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Helpers\DelegateCommand.cs" />
+    <Compile Include="ViewModels\AppViewModel.cs" />
+    <Compile Include="ViewModels\SessionViewModels\SessionInstanceViewModel.cs" />
+    <Compile Include="ViewModels\SessionViewModels\SessionsViewModel.cs" />
+    <Compile Include="ViewModels\SettingsViewModels\SettingsViewModel.cs" />
+    <Compile Include="ViewModels\ViewModel.cs" />
     <Compile Include="Views\AppWindow.xaml.cs">
       <DependentUpon>AppWindow.xaml</DependentUpon>
     </Compile>
@@ -95,9 +104,20 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Smart.Sharp.Engine\Smart.Sharp.Engine.csproj">
+      <Project>{2E061909-8E2D-49E8-8EF4-E5B329DBC6E0}</Project>
+      <Name>Smart.Sharp.Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Smart.Sharp.Native\Smart.Sharp.Native.csproj">
+      <Project>{03E9E3EC-49EA-4C53-8992-71FEC064D219}</Project>
+      <Name>Smart.Sharp.Native</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <Page Include="Views\AppWindow.xaml">
       <SubType>Designer</SubType>
@@ -107,15 +127,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\BotViews\BotsViewResources.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\ColourPalette.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\IconResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SessionViews\SessionViewResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Smart.Sharp.Core.Controller;
+using Smart.Sharp.Core.ViewModels;
 
 namespace Smart.Sharp.Core.Views
 {
@@ -20,10 +21,10 @@ namespace Smart.Sharp.Core.Views
   /// </summary>
   internal partial class AppWindow : Window
   {
-
-
+    
     internal AppWindow(IAppController controller)
     {
+      DataContext = new AppViewModel(controller);
       InitializeComponent();
     }
   }

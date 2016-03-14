@@ -46,7 +46,7 @@ namespace Smart.Sharp.Engine.ScriptSystem
 
     #region public methods
 
-    public void Start(ScriptSystem.Script script)
+    public void Start(Script script)
     {
       // Create script
       List<IncludeScript> scriptToRun = new List<IncludeScript> { new IncludeScript { ScriptId = script.Name, Uri = script.Uri } };

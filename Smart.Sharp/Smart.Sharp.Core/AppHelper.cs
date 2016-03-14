@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
 using Smart.Sharp.Core.Controller;
 using Smart.Sharp.Core.Views;
 
@@ -12,25 +7,17 @@ namespace Smart.Sharp.Core
 {
   internal static class AppHelper
   {
-
-    internal static string SmartSharpFolderPath { get; private set; }
-
-    internal static string SettingsFolderPath { get; private set; }
-
-    internal static string ScreenshotFolderPath { get; private set; }
-
-    internal static string SmartFolderPath { get; private set; }
-
+    
     internal static void PreStartUp()
     {
       // Check SmartSharp directories exist
-      CheckAndMakeDirectory((SmartSharpFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".SmartSharp")));
+      CheckAndMakeDirectory((Properties.Settings.Default.SmartSharpFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "SmartSharp")));
 
-      CheckAndMakeDirectory((SettingsFolderPath = Path.Combine(SmartSharpFolderPath, "Settings")));
+      CheckAndMakeDirectory((Properties.Settings.Default.ScreenshotsFolder = Path.Combine(Properties.Settings.Default.SmartSharpFolder, "Screenshots")));
+      
+      CheckAndMakeDirectory((Properties.Settings.Default.ScriptsFolder = Path.Combine(Properties.Settings.Default.SmartSharpFolder, "Scripts")));
 
-      CheckAndMakeDirectory((ScreenshotFolderPath = Path.Combine(SmartSharpFolderPath, "Screenshots")));
-
-      CheckAndMakeDirectory((SmartFolderPath = Path.Combine(SmartSharpFolderPath, "Smart")));
+      Properties.Settings.Default.Save();
 
     }
 

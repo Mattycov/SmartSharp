@@ -17,11 +17,12 @@
     <ControlTemplate x:Key="RootControlTemplate">
         <Grid>
             <TabControl Style="{StaticResource TabControlStyle}">
-                <TabItem Style="{StaticResource TabItemStyle}" Template="{StaticResource BotsTabItemControlTemplate}">
-
+                <TabItem Style="{StaticResource TabItemStyle}" Template="{StaticResource SessionsTabItemControlTemplate}" DataContext="{Binding SessionsViewModel}">
+                    <Control Foreground="{StaticResource NavyDarkBrush}" Template="{StaticResource SessionsTabContentControlTemplate}"/>
                 </TabItem>
-                <TabItem Style="{StaticResource TabItemStyle}" Template="{StaticResource SettingsTabItemControlTemplate}">
-                    
+                
+                <TabItem Style="{StaticResource TabItemStyle}" Template="{StaticResource SettingsTabItemControlTemplate}" DataContext="{Binding SettingsViewModel}">
+                    <Control Foreground="{StaticResource NavyDarkBrush}" Template="{StaticResource SettingsTabContentControlTemplate}"/>
                 </TabItem>
             </TabControl>
         </Grid>

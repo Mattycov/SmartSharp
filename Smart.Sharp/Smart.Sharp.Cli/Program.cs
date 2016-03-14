@@ -3,6 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Net.Configuration;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Smart.Sharp.Engine;
 using Smart.Sharp.Native;
 
@@ -29,13 +30,20 @@ namespace Smart.Sharp.Cli
       settings.SessionType = SessionType.OldSchool;
       settings.JavaPath = javaPath;
       settings.SmartPath = smartRemotePath;
+      
+      Session session = new Session(remote, settings);
 
-      Session session  = new Session(remote, settings);
+      Console.WriteLine($"Is Alive: { session.IsAlive }");
 
       Console.WriteLine("Press any key to quit...");
       Console.ReadKey();
-
+      
       bool quitSafely = session.Stop();
+      while (session.IsAlive)
+      {
+        Console.WriteLine("Waiting");
+        Thread.Sleep(250);
+      }
 
       Console.WriteLine($"Session ended: {quitSafely}");
       Console.WriteLine("Press any key to continue...");
