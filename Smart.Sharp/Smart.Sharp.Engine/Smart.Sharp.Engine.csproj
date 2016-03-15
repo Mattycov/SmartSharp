@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Event\SessionEventArgs.cs" />
     <Compile Include="ScriptSystem\MethodProvider.cs" />
+    <Compile Include="ScriptSystem\Methods\Mouse.cs" />
     <Compile Include="ScriptSystem\Script.cs" />
     <Compile Include="ScriptSystem\ScriptController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

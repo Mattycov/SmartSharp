@@ -23,7 +23,7 @@ namespace Smart.Sharp.Cli
         return;
       }
       javaPath = Path.Combine(javaPath, "bin", "java.exe");
-      string smartRemotePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "smart");
+      string smartRemotePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "SmartSharp", "Smart");
 
       SmartRemote remote = new SmartRemote(smartRemotePath);
 
@@ -40,18 +40,21 @@ namespace Smart.Sharp.Cli
       }
 
       Session session = new Session(remote, settings);
+      session.SessionStarted += (sender, eventArgs) =>
+      {
+        Script script = new Script();
+        script.Uri = ".\\testscript.js";
+        script.Name = "script";
+
+        session.ScriptController.Start(script);
+      };
+
       session.Start();
-
-      /*Script script = new Script();
-      script.Uri = ".\\testscript.js";
-      script.Name = "script";
-
-      session.StartScript(script);
 
       Console.WriteLine("Press any key to stop script...");
       Console.ReadKey();
 
-      session.StopScript();*/
+      session.ScriptController.Stop();
 
       Console.WriteLine("Press any key to quit...");
       Console.ReadKey();

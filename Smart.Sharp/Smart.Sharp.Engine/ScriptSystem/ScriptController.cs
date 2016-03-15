@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using Microsoft.ClearScript.V8;
+using Smart.Sharp.Engine.ScriptSystem.Methods;
 
 namespace Smart.Sharp.Engine.ScriptSystem
 {
@@ -40,7 +41,7 @@ namespace Smart.Sharp.Engine.ScriptSystem
       {
         using (V8ScriptEngine engine = new V8ScriptEngine())
         {
-          //engine.AddHostObject("mouse", new Mouse(session));
+          engine.AddHostObject("mouse", new Mouse(session));
           while (running)
           {
             engine.Execute(scriptString);

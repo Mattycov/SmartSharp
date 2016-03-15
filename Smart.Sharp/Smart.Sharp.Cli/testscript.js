@@ -1,4 +1,4 @@
-﻿mouse.MoveMouse(100, 200);
-mouse.MoveMouse(500, 50);
-mouse.MoveMouse(324, 556);
-mouse.MoveMouse(235, 354);
+﻿mouse.WindMouse(100, 200);
+mouse.WindMouse(500, 50);
+mouse.WindMouse(324, 556);
+mouse.WindMouse(235, 354);

@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Smart.Sharp.Core", "Smart.S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Smart.Sharp.Engine", "Smart.Sharp.Engine\Smart.Sharp.Engine.csproj", "{2E061909-8E2D-49E8-8EF4-E5B329DBC6E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Smart.Sharp.OSRS", "Smart.Sharp.OSRS\Smart.Sharp.OSRS.csproj", "{99EC56D4-2009-4BE2-BC78-1E3DF0ED3C8F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,14 +51,6 @@ Global
 		{2E061909-8E2D-49E8-8EF4-E5B329DBC6E0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2E061909-8E2D-49E8-8EF4-E5B329DBC6E0}.Release|x86.ActiveCfg = Release|Any CPU
 		{2E061909-8E2D-49E8-8EF4-E5B329DBC6E0}.Release|x86.Build.0 = Release|Any CPU
-		{99EC56D4-2009-4BE2-BC78-1E3DF0ED3C8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{99EC56D4-2009-4BE2-BC78-1E3DF0ED3C8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{99EC56D4-2009-4BE2-BC78-1E3DF0ED3C8F}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{99EC56D4-2009-4BE2-BC78-1E3DF0ED3C8F}.Debug|x86.Build.0 = Debug|Any CPU
-		{99EC56D4-2009-4BE2-BC78-1E3DF0ED3C8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{99EC56D4-2009-4BE2-BC78-1E3DF0ED3C8F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{99EC56D4-2009-4BE2-BC78-1E3DF0ED3C8F}.Release|x86.ActiveCfg = Release|Any CPU
-		{99EC56D4-2009-4BE2-BC78-1E3DF0ED3C8F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
