@@ -5,6 +5,7 @@ using System.Net.Configuration;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Smart.Sharp.Engine;
+using Smart.Sharp.Engine.ScriptSystem;
 using Smart.Sharp.Native;
 
 namespace Smart.Sharp.Cli
@@ -30,22 +31,34 @@ namespace Smart.Sharp.Cli
       settings.SessionType = SessionType.OldSchool;
       settings.JavaPath = javaPath;
       settings.SmartPath = smartRemotePath;
-      
-      Session session = new Session(remote, settings);
 
-      Console.WriteLine($"Is Alive: { session.IsAlive }");
+      if (!File.Exists("testscript.js"))
+      {
+        Console.WriteLine("Can't find testscript.js press and key to continue...");
+        Console.ReadKey();
+        return;
+      }
+
+      Session session = new Session(remote, settings);
+      session.Start();
+
+      /*Script script = new Script();
+      script.Uri = ".\\testscript.js";
+      script.Name = "script";
+
+      session.StartScript(script);
+
+      Console.WriteLine("Press any key to stop script...");
+      Console.ReadKey();
+
+      session.StopScript();*/
 
       Console.WriteLine("Press any key to quit...");
       Console.ReadKey();
       
-      bool quitSafely = session.Stop();
-      while (session.IsAlive)
-      {
-        Console.WriteLine("Waiting");
-        Thread.Sleep(250);
-      }
+      session.Stop();
 
-      Console.WriteLine($"Session ended: {quitSafely}");
+      //Console.WriteLine($"Session ended: {quitSafely}");
       Console.WriteLine("Press any key to continue...");
       Console.ReadKey();
 

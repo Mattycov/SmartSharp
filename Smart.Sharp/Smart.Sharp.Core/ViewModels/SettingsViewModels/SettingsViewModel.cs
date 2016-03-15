@@ -120,5 +120,9 @@ namespace Smart.Sharp.Core.ViewModels.SettingsViewModels
 
     #endregion
 
+    public override void Dispose()
+    {
+      
+    }
   }
 }

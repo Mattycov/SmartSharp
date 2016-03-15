@@ -17,6 +17,8 @@ namespace Smart.Sharp.Core
       
       CheckAndMakeDirectory((Properties.Settings.Default.ScriptsFolder = Path.Combine(Properties.Settings.Default.SmartSharpFolder, "Scripts")));
 
+      CheckAndMakeDirectory((Properties.Settings.Default.SmartFolder = Path.Combine(Properties.Settings.Default.SmartSharpFolder, "Smart")));
+
       Properties.Settings.Default.Save();
 
     }

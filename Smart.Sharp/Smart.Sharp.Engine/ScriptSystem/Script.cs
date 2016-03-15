@@ -8,8 +8,6 @@ namespace Smart.Sharp.Engine.ScriptSystem
     public string Name { get; set; }
 
     public string Uri { get; set; }
-
-    public List<Script> IncludeScripts { get; set; } 
-
+    
   }
 }

@@ -20,7 +20,10 @@
     <DataTemplate x:Key="SessionInstanceDataTemplate">
         <Border BorderBrush="{StaticResource PurpleLightBrush}">
             <Grid MinWidth="50" MinHeight="50" >
-                <TextBlock Text="{Binding Id}"/>
+                <StackPanel>
+                    <TextBlock Text="{Binding Id}"/>
+                    <Button Content="Stop" Command="{Binding StopSessionCommand}"/>
+                </StackPanel>
             </Grid>
         </Border>
     </DataTemplate>

@@ -1,31 +1,56 @@
 ﻿using System;
-using System.Drawing;
-using System.Runtime.InteropServices;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Smart.Sharp.Engine.Event;
 using Smart.Sharp.Engine.ScriptSystem;
 using Smart.Sharp.Native;
 
 namespace Smart.Sharp.Engine
 {
+
+  public delegate void SessionStartedEvenHandler(object sender, EventArgs args);
+  public delegate void SessionStoppedEvenHandler(object sender, EventArgs args);
+
   public class Session
   {
+    
+    #region events
 
-    #region fields
+    public event SessionStartedEvenHandler SessionStarted;
 
-    private readonly ScriptController scriptController;
-    private readonly SessionSettings sessionSettings;
+    public event SessionStoppedEvenHandler SessionStopped;
+
+    #endregion
+
+    #region variables
+
+    private static int sessionCount = 0;
+
+    private readonly ManualResetEvent resetEvent;
+    private readonly SessionSettings settings;
+
+    private Thread smartThread;
 
     #endregion
 
     #region properties
-    
-    internal IntPtr SmartHandle { get; private set; }
 
-    internal SmartRemote SmartRemote { get; private set; }
+    public ScriptController ScriptController { get; private set; }
 
-    public int Id { get { return SmartHandle.ToInt32(); } }
+    public string Id { get { return SmartHandle.ToString(); } }
 
-    public bool IsAlive { get { return SmartRemote.IsActive(SmartHandle); } }
-    
+    public bool Alive
+    {
+      get { return SmartHandle != IntPtr.Zero; }
+    }
+
+    public SmartRemote SmartRemote { get; private set; }
+
+    public IntPtr SmartHandle { get; private set; }
+
     #endregion
 
     #region constructor
@@ -33,64 +58,77 @@ namespace Smart.Sharp.Engine
     public Session(SmartRemote smartRemote, SessionSettings settings)
     {
       SmartRemote = smartRemote;
-      sessionSettings = settings;
-      scriptController = new ScriptController(this);
-      SmartHandle = InitSmart();
+      this.settings = settings;
+      resetEvent = new ManualResetEvent(false);
+      ScriptController = new ScriptController(this);
+      
     }
 
     #endregion
 
     #region private methods
 
-    private IntPtr InitSmart()
+    private void StartSmart(SessionSettings settings)
     {
-      string url = sessionSettings.SessionType == SessionType.RS3 ? "http://world37.runescape.com/" : "http://oldschool81.runescape.com/";
+      string url = settings.SessionType == SessionType.RS3 ? "http://world37.runescape.com/" : "http://oldschool81.runescape.com/";
 
-      return SmartRemote.SpawnClient(sessionSettings.JavaPath, sessionSettings.SmartPath, url, "", 800, 600, null, null, null, null);
+      int availableClients = SmartRemote.GetClients(true);
+      if (availableClients > 0)
+      {
+        for (int i = 0; i < availableClients; i++)
+        {
+          int availableClient = SmartRemote.GetAvailablePID(i);
+          IntPtr handle = SmartRemote.PairClient(availableClient);
+          if (handle != IntPtr.Zero)
+          {
+            SmartHandle = handle;
+            break;
+          }
+        }
+      }
+      if (SmartHandle == IntPtr.Zero)
+        SmartHandle = SmartRemote.SpawnClient(settings.JavaPath, settings.SmartPath, url, "", 800, 600, null, null, null, null);
+
+      OnSessionStarted(EventArgs.Empty);
+
+      resetEvent.WaitOne();
+
+      SmartRemote.KillClient(SmartRemote.GetClientPID(SmartHandle));
+
+      OnSessionStopped(EventArgs.Empty);
+    }
+
+    #endregion
+
+    #region protected methods
+
+    protected virtual void OnSessionStarted(EventArgs args)
+    {
+      SessionStarted?.Invoke(this, args);
+    }
+
+    protected virtual void OnSessionStopped(EventArgs args)
+    {
+      SessionStopped?.Invoke(this, args);
     }
 
     #endregion
 
     #region public methods
 
-    public void StartScript(Script script)
+    public void Start()
     {
-      scriptController.Start(script);
+      smartThread = new Thread(() => StartSmart(settings));
+      Interlocked.Increment(ref sessionCount);
+      smartThread.Name = $"SessionThread-{sessionCount}";
+      smartThread.IsBackground = true;
+      smartThread.Start();
     }
 
-    public void StopScript()
+    public void Stop()
     {
-      scriptController.Stop();
-    }
-
-    public bool Stop()
-    {
-      return SmartRemote.KillClient(SmartRemote.GetClientPID(SmartHandle));
-    }
-
-    public Bitmap GetClientBitmap()
-    {
-      int width = 800;
-      int height = 600;
-
-      int length = ((width * 32 + 31) / 32) * 4 * height;
-      byte[] bytes = new byte[length];
-      Marshal.Copy(SmartHandle, bytes, 0, length);
-
-      Bitmap bmp = new Bitmap(width, height);
-      int i = 0;
-      for (int y = 0; y < height; y++)
-      {
-        for (int x = 0; x < width; x++)
-        {
-          int blue = bytes[i++];
-          int green = bytes[i++];
-          int red = bytes[i++];
-          i++;
-          bmp.SetPixel(x, y, Color.FromArgb(red, green, blue));
-        }
-      }
-      return bmp;
+      resetEvent.Set();
+      smartThread?.Join();
     }
 
     #endregion

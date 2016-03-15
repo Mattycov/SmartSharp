@@ -25,5 +25,10 @@ namespace Smart.Sharp.Core.ViewModels
       SettingsViewModel = new SettingsViewModel(controller);
       SessionsViewModel = new SessionsViewModel(controller);
     }
+
+    public override void Dispose()
+    {
+      
+    }
   }
 }

@@ -10,15 +10,20 @@ using Smart.Sharp.Core.Controller;
 
 namespace Smart.Sharp.Core.ViewModels
 {
-  internal class ViewModel : INotifyPropertyChanged
+  internal abstract class ViewModel : INotifyPropertyChanged, IDisposable
   {
     public event PropertyChangedEventHandler PropertyChanged;
     
     protected IAppController Controller { get; private set; }
 
-    public ViewModel(IAppController controller)
+    protected ViewModel(IAppController controller)
     {
       Controller = controller;
+    }
+
+    ~ViewModel()
+    {
+      Dispose();
     }
 
     [NotifyPropertyChangedInvocator]
@@ -26,5 +31,8 @@ namespace Smart.Sharp.Core.ViewModels
     {
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
+
+    public abstract void Dispose();
+
   }
 }

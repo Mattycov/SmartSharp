@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Net.Configuration;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ using Smart.Sharp.Engine;
 
 namespace Smart.Sharp.Core.ViewModels.SessionViewModels
 {
-  internal class SessionsViewModel : ViewModel
+  internal class SessionsViewModel : ViewModel, IDisposable
   {
 
     #region variables
@@ -66,7 +67,32 @@ namespace Smart.Sharp.Core.ViewModels.SessionViewModels
       CreateSession();
     }
 
-    public async void CreateSession()
+    private void OnSessionStarted(object sender, EventArgs args)
+    {
+      Session session = sender as Session;
+      if (session == null)
+        return;
+
+      Application.Current.Dispatcher.BeginInvoke((Action) (() => Sessions.Add(new SessionInstanceViewModel(Controller, session))));
+      session.SessionStarted -= OnSessionStarted;
+    }
+
+    private void OnSessionStopped(object sender, EventArgs args)
+    {
+      Session session = sender as Session;
+      if (session == null)
+        return;
+
+      SessionInstanceViewModel sessionViewModel = Sessions.FirstOrDefault(vm => vm.Id == session.Id);
+      Application.Current.Dispatcher.BeginInvoke((Action)(() => Sessions.Remove(sessionViewModel)));
+      session.SessionStopped -= OnSessionStopped;
+    }
+
+    #endregion
+
+    #region public methods
+
+    public void CreateSession()
     {
       string javaPath = Properties.Settings.Default.JavaPath;
       if (string.IsNullOrEmpty(javaPath))
@@ -86,15 +112,18 @@ namespace Smart.Sharp.Core.ViewModels.SessionViewModels
       settings.JavaPath = javaPath;
       settings.SmartPath = smartPath;
 
-      Session session = await InitSession(settings);
-      Dispatcher.CurrentDispatcher.BeginInvoke((Action) (() => Sessions.Add(new SessionInstanceViewModel(Controller, session))));
+      Session session = new Session(Controller.SmartRemote, settings);
+      session.SessionStarted += OnSessionStarted;
+      session.SessionStopped += OnSessionStopped;
+      session.Start();
     }
 
-    private Task<Session> InitSession(SessionSettings settings)
+
+    public override void Dispose()
     {
-      return Task.Run(() => new Session(Controller.SmartRemote, settings));
     }
 
     #endregion
+
   }
 }
