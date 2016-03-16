@@ -57,11 +57,8 @@ namespace Smart.Sharp.Engine.ScriptSystem
 
     public void Stop()
     {
-      if (scriptThread == null)
-        return;
-
       running = false;
-      scriptThread.Join();
+      scriptThread?.Join();
     }
 
     #endregion

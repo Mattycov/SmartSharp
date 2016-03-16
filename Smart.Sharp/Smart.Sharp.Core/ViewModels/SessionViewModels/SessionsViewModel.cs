@@ -20,7 +20,7 @@ namespace Smart.Sharp.Core.ViewModels.SessionViewModels
     #region variables
 
     private ObservableCollection<SessionInstanceViewModel> sessions;
-    private SessionInstanceViewModel selectedSession;
+    private SessionInstanceViewModel selectedSessionViewModel;
 
     #endregion
 
@@ -31,15 +31,15 @@ namespace Smart.Sharp.Core.ViewModels.SessionViewModels
       get { return sessions ?? (sessions = new ObservableCollection<SessionInstanceViewModel>()); }
     }
 
-    public SessionInstanceViewModel SelectedSession
+    public SessionInstanceViewModel SelectedSessionViewModel
     {
-      get { return selectedSession; }
+      get { return selectedSessionViewModel; }
       set
       {
-        if (selectedSession == value)
+        if (selectedSessionViewModel == value)
           return;
-        selectedSession = value;
-        OnPropertyChanged(nameof(SelectedSession));
+        selectedSessionViewModel = value;
+        OnPropertyChanged(nameof(SelectedSessionViewModel));
       }
     }
 

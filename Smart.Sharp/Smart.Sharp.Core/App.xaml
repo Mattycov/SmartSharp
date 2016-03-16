@@ -5,6 +5,7 @@
     <Application.Resources>
          <ResourceDictionary>
              <ResourceDictionary.MergedDictionaries>
+                 <!--<ResourceDictionary Source="Views/MaterialDarkPalette.xaml"/>-->
                  <ResourceDictionary Source="Views/ColourPalette.xaml"/>
                  <ResourceDictionary Source="Views/IconResources.xaml"/>
                  <ResourceDictionary Source="Views/SessionViews/SessionViewResources.xaml"/>

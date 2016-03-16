@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
-using System.Net.Configuration;
 using System.Runtime.InteropServices;
-using System.Threading;
 using Smart.Sharp.Engine;
 using Smart.Sharp.Engine.ScriptSystem;
 using Smart.Sharp.Native;
