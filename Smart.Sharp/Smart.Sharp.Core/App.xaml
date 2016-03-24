@@ -8,6 +8,7 @@
                  <!--<ResourceDictionary Source="Views/MaterialDarkPalette.xaml"/>-->
                  <ResourceDictionary Source="Views/ColourPalette.xaml"/>
                  <ResourceDictionary Source="Views/IconResources.xaml"/>
+                 <ResourceDictionary Source="Views/Style/MaterialDarkStyle.xaml"/>
                  <ResourceDictionary Source="Views/SessionViews/SessionViewResources.xaml"/>
                  <ResourceDictionary Source="Views/SettingViews/SettingsViewResources.xaml"/>
                  <ResourceDictionary Source="Views/AppWindowResources.xaml"/>

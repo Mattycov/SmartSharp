@@ -87,7 +87,7 @@ namespace Smart.Sharp.Core.ViewModels.SettingsViewModels
         MessageBox.Show("Could not find JAVA_HOME Environment Variable", "Warning!", MessageBoxButton.OK);
         return;
       }
-      path = Path.Combine(path, "bin", "java.exe");
+      path = Path.Combine(path, "bin");
       if (!File.Exists(path))
       {
         MessageBox.Show($"Could not find {path}", "Warning!", MessageBoxButton.OK);
@@ -103,11 +103,10 @@ namespace Smart.Sharp.Core.ViewModels.SettingsViewModels
 
     private void BrowseJavaPathCommandImpl()
     {
-      OpenFileDialog openFileDialog = new OpenFileDialog();
-      openFileDialog.DefaultExt = "*.exe";
-      if (openFileDialog.ShowDialog() != DialogResult.OK)
+      FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+      if (folderBrowserDialog.ShowDialog() != DialogResult.OK)
         return;
-      JavaPath = openFileDialog.FileName;
+      JavaPath = folderBrowserDialog.SelectedPath;
     }
 
     private void BrowseSmartPathCommandImpl()

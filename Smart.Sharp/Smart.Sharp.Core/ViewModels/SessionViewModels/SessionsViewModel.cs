@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Net.Configuration;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
 using Smart.Sharp.Core.Controller;
 using Smart.Sharp.Core.Helpers;
 using Smart.Sharp.Engine;
@@ -21,6 +16,7 @@ namespace Smart.Sharp.Core.ViewModels.SessionViewModels
 
     private ObservableCollection<SessionInstanceViewModel> sessions;
     private SessionInstanceViewModel selectedSessionViewModel;
+    private SessionType selectedSessionType;
 
     #endregion
 
@@ -29,6 +25,18 @@ namespace Smart.Sharp.Core.ViewModels.SessionViewModels
     public ObservableCollection<SessionInstanceViewModel> Sessions
     {
       get { return sessions ?? (sessions = new ObservableCollection<SessionInstanceViewModel>()); }
+    }
+
+    public SessionType SelectedSessionType
+    {
+      get { return selectedSessionType; }
+      set
+      {
+        if (selectedSessionType == value)
+          return;
+        selectedSessionType = value;
+        OnPropertyChanged(nameof(SelectedSessionType));
+      }
     }
 
     public SessionInstanceViewModel SelectedSessionViewModel
@@ -108,9 +116,10 @@ namespace Smart.Sharp.Core.ViewModels.SessionViewModels
         return;
       }
       SessionSettings settings = new SessionSettings();
-      settings.SessionType = SessionType.OldSchool;
+      settings.SessionType = SessionType.OSRS;
       settings.JavaPath = javaPath;
       settings.SmartPath = smartPath;
+      settings.ShowConsole = false;
 
       Session session = new Session(Controller.SmartRemote, settings);
       session.SessionStarted += OnSessionStarted;

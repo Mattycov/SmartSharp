@@ -5,6 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Smart.Sharp.Core.Views"
         mc:Ignorable="d"
-        Title="SMART Sharp" Height="768" Width="1024" x:ClassModifier="internal">
+        Title="SMART Sharp" Height="768" Width="1024" x:ClassModifier="internal" Background="{StaticResource Canvas}">
     <Control Template="{StaticResource RootControlTemplate}"/>
 </Window>

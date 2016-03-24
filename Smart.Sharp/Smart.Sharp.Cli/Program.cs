@@ -3,7 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 using Smart.Sharp.Engine;
-using Smart.Sharp.Engine.ScriptSystem;
+using Smart.Sharp.Engine.Script;
 using Smart.Sharp.Native;
 
 namespace Smart.Sharp.Cli
@@ -20,19 +20,20 @@ namespace Smart.Sharp.Cli
         Console.ReadKey();
         return;
       }
-      javaPath = Path.Combine(javaPath, "bin", "java.exe");
+      javaPath = Path.Combine(javaPath, "bin");
       string smartRemotePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "SmartSharp", "Smart");
 
       SmartRemote remote = new SmartRemote(smartRemotePath);
 
       SessionSettings settings = new SessionSettings();
-      settings.SessionType = SessionType.OldSchool;
+      settings.SessionType = SessionType.OSRS;
       settings.JavaPath = javaPath;
       settings.SmartPath = smartRemotePath;
+      settings.ShowConsole = true;
 
-      if (!File.Exists("testscript.js"))
+      if (!File.Exists("testscript.lua"))
       {
-        Console.WriteLine("Can't find testscript.js press and key to continue...");
+        Console.WriteLine("Can't find testscript.lua press and key to continue...");
         Console.ReadKey();
         return;
       }
@@ -41,7 +42,7 @@ namespace Smart.Sharp.Cli
       session.SessionStarted += (sender, eventArgs) =>
       {
         Script script = new Script();
-        script.Uri = ".\\testscript.js";
+        script.Uri = ".\\testscript.lua";
         script.Name = "script";
 
         session.ScriptController.Start(script);

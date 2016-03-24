@@ -14,6 +14,8 @@ namespace Smart.Sharp.Core.ViewModels.SessionViewModels
 
     public Session Session { get; private set; }
 
+    public SessionType SessionType { get; private set; }
+
     #endregion
 
     #region commands
@@ -28,6 +30,7 @@ namespace Smart.Sharp.Core.ViewModels.SessionViewModels
     {
       Session = session;
       Id = session.Id;
+      SessionType = session.SessionType;
       StopSessionCommand = new DelegateCommand(StopSessionCommandImpl);
     }
 

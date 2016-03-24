@@ -82,5 +82,17 @@ namespace Smart.Sharp.Core.Properties {
                 this["ScriptsFolder"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string PluginFolder {
+            get {
+                return ((string)(this["PluginFolder"]));
+            }
+            set {
+                this["PluginFolder"] = value;
+            }
+        }
     }
 }

@@ -2,27 +2,15 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:Smart.Sharp.Core.Views">
     
-    <Style x:Key="TabControlStyle" TargetType="{x:Type TabControl}">
-        <Setter Property="TabStripPlacement" Value="Left"/>
-        <Setter Property="Background" Value="{StaticResource GrayCyanLightBrush}"/>
-        <Setter Property="Foreground" Value="{StaticResource NavyDarkBrush}"/>
-        <Setter Property="BorderThickness" Value="0"/>
-    </Style>
-    
-    <Style x:Key="TabItemStyle" TargetType="{x:Type TabItem}">
-        <Setter Property="Background" Value="{StaticResource CyanLightBrush}"/>
-        <Setter Property="Foreground" Value="{StaticResource GrayCyanLightBrush}"/>
-    </Style>
-    
     <ControlTemplate x:Key="RootControlTemplate">
-        <Grid>
+        <Grid Background="{StaticResource Canvas}">
             <TabControl Style="{StaticResource TabControlStyle}">
-                <TabItem Style="{StaticResource TabItemStyle}" Template="{StaticResource SessionsTabItemControlTemplate}" DataContext="{Binding SessionsViewModel}">
-                    <Control Foreground="{StaticResource NavyDarkBrush}" Template="{StaticResource SessionsTabContentControlTemplate}"/>
+                <TabItem Style="{StaticResource TabItemStyle}" Header="Sessions" >
+                    <Control DataContext="{Binding SessionsViewModel}" Template="{StaticResource SessionsTabContentControlTemplate}"/>
                 </TabItem>
                 
-                <TabItem Style="{StaticResource TabItemStyle}" Template="{StaticResource SettingsTabItemControlTemplate}" DataContext="{Binding SettingsViewModel}">
-                    <Control Foreground="{StaticResource NavyDarkBrush}" Template="{StaticResource SettingsTabContentControlTemplate}"/>
+                <TabItem Style="{StaticResource TabItemStyle}" Header="Settings">
+                    <Control DataContext="{Binding SettingsViewModel}" Template="{StaticResource SettingsTabContentControlTemplate}"/>
                 </TabItem>
             </TabControl>
         </Grid>

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Smart.Sharp.Engine.Event;
-using Smart.Sharp.Engine.ScriptSystem;
+using Smart.Sharp.Engine.Script;
 using Smart.Sharp.Native;
 
 namespace Smart.Sharp.Engine
@@ -51,6 +52,8 @@ namespace Smart.Sharp.Engine
 
     public IntPtr SmartHandle { get; private set; }
 
+    public SessionType SessionType { get; private set; }
+
     #endregion
 
     #region constructor
@@ -59,6 +62,7 @@ namespace Smart.Sharp.Engine
     {
       SmartRemote = smartRemote;
       this.settings = settings;
+      SessionType = settings.SessionType;
       resetEvent = new ManualResetEvent(false);
       ScriptController = new ScriptController(this);
       
@@ -71,6 +75,8 @@ namespace Smart.Sharp.Engine
     private void StartSmart(SessionSettings settings)
     {
       string url = settings.SessionType == SessionType.RS3 ? "http://world37.runescape.com/" : "http://oldschool81.runescape.com/";
+
+      string javaPath = Path.Combine(settings.JavaPath, settings.ShowConsole ? "java.exe" : "javaw.exe");
 
       int availableClients = SmartRemote.GetClients(true);
       if (availableClients > 0)
@@ -87,7 +93,7 @@ namespace Smart.Sharp.Engine
         }
       }
       if (SmartHandle == IntPtr.Zero)
-        SmartHandle = SmartRemote.SpawnClient(settings.JavaPath, settings.SmartPath, url, "", 800, 600, null, null, null, null);
+        SmartHandle = SmartRemote.SpawnClient(javaPath, settings.SmartPath, url, "", 800, 600, null, null, null, null);
 
       OnSessionStarted(EventArgs.Empty);
 

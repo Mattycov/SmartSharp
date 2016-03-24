@@ -8,6 +8,6 @@ namespace Smart.Sharp.Engine
 {
   public enum SessionType
   {
-    RS3, OldSchool
+    RS3, OSRS
   }
 }

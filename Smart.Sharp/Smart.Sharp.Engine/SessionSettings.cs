@@ -15,5 +15,7 @@ namespace Smart.Sharp.Engine
 
     public SessionType SessionType { get; set; }
 
+    public bool ShowConsole { get; set; }
+
   }
 }

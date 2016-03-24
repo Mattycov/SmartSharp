@@ -2,30 +2,13 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:helpers="clr-namespace:Smart.Sharp.Core.Helpers">
     
-    
-    <ControlTemplate x:Key="SettingsTabItemControlTemplate" TargetType="{x:Type TabItem}">
-        <Grid x:Name="PART_HeaderRootGrid" Background="{StaticResource CyanLightBrush}">
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <Control Grid.Row="0" Width="50" Height="50" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Template="{StaticResource SettingsIconControlTemplate}" Margin="5,5,5,2"/>
-            <TextBlock Grid.Row="1" Text="Settings" HorizontalAlignment="Center" Margin="5,0,5,5"/>
-        </Grid>
-        <ControlTemplate.Triggers>
-            <Trigger Property="IsSelected" Value="True">
-                <Setter TargetName="PART_HeaderRootGrid" Property="Background" Value="{StaticResource CyanDarkBrush}"/>
-            </Trigger>
-        </ControlTemplate.Triggers>
-    </ControlTemplate>
-    
     <ControlTemplate x:Key="SettingsTabContentControlTemplate" TargetType="{x:Type Control}">
-        <Grid>
+        <Grid Background="{StaticResource Canvas}" helpers:PanelLayoutHelper.Margin="5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0" helpers:PanelLayoutHelper.Margin="2" helpers:PanelLayoutHelper.ContentVerticalAlignment="Center">
+            <Grid Grid.Row="0" helpers:PanelLayoutHelper.Margin="5" helpers:PanelLayoutHelper.ContentVerticalAlignment="Center">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
@@ -37,19 +20,19 @@
                 </Grid.RowDefinitions>
 
                 <!-- Java Path -->
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Java Path:"/>
-                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding JavaPath}"/>
+                <TextBlock Style="{StaticResource TextBlockStyle}" Grid.Row="0" Grid.Column="0" Text="Java Path:"/>
+                <TextBox Style="{StaticResource TextBoxStyle}" Grid.Row="0" Grid.Column="1" Text="{Binding JavaPath}"/>
                 <DockPanel Grid.Row="0" Grid.Column="2">
-                    <Button Margin="2,0,4,0" Content="Set Default" Command="{Binding SetJavaPathCommand}" HorizontalAlignment="Left"/>
-                    <Button Content="Browse" Command="{Binding BrowseJavaPathCommand}" HorizontalAlignment="Right"/>
+                    <Button Style="{StaticResource PrimaryFlatButtonStyle}" Margin="2,0,4,0" Content="Set Default" Command="{Binding SetJavaPathCommand}" HorizontalAlignment="Left"/>
+                    <Button Style="{StaticResource PrimaryFlatButtonStyle}" Content="Browse" Command="{Binding BrowseJavaPathCommand}" HorizontalAlignment="Right"/>
                 </DockPanel>
 
                 <!-- SMART Path -->
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="SMART Path:"/>
-                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SmartPath}"/>
-                <Button Grid.Row="1" Grid.Column="2" Content="Browse" Command="{Binding BrowseSmartPathCommand}" />
+                <TextBlock Style="{StaticResource TextBlockStyle}" Grid.Row="1" Grid.Column="0" Text="SMART Path:"/>
+                <TextBox Style="{StaticResource TextBoxStyle}" Grid.Row="1" Grid.Column="1" Text="{Binding SmartPath}"/>
+                <Button Style="{StaticResource PrimaryFlatButtonStyle}" Grid.Row="1" Grid.Column="2" Content="Browse" Command="{Binding BrowseSmartPathCommand}" />
             </Grid>
-            <Button Grid.Row="1" Content="Save" Command="{Binding SaveSettingsCommand}" HorizontalAlignment="Right"/>
+            <Button Style="{StaticResource PrimaryRaisedButtonStyle}" Grid.Row="1" Content="Save" Command="{Binding SaveSettingsCommand}" HorizontalAlignment="Right"/>
         </Grid>
     </ControlTemplate>
     
