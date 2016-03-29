@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using Smart.Sharp.Engine.Script;
 
 namespace Smart.Sharp.Engine.Api
@@ -51,7 +47,7 @@ namespace Smart.Sharp.Engine.Api
       return bmp;
     }
 
-    public Bitmap FixPixelFormat(Bitmap image)
+    private Bitmap FixPixelFormat(Bitmap image)
     {
       return image.Clone(new Rectangle(0, 0, image.Width, image.Height), PixelFormat.Format24bppRgb);
     }

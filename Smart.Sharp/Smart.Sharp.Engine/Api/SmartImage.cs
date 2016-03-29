@@ -14,6 +14,8 @@ namespace Smart.Sharp.Engine.Api
   public class SmartImage
   {
 
+
+
     #region variables
 
     private Bitmap image;
@@ -21,6 +23,8 @@ namespace Smart.Sharp.Engine.Api
 
     private readonly FiltersSequence filterSequence;
     private readonly Crop cropper;
+    private readonly BlobCounter counter;
+
 
     #endregion
 
@@ -32,6 +36,7 @@ namespace Smart.Sharp.Engine.Api
 
       filterSequence = new FiltersSequence();
       cropper = new Crop(new Rectangle(0, 0, 0, 0));
+      counter = new BlobCounter();
     }
 
     #endregion
@@ -96,7 +101,7 @@ namespace Smart.Sharp.Engine.Api
       if (!filtering)
         return;
 
-      HSLFiltering filter  = new HSLFiltering();
+      HSLFiltering filter = new HSLFiltering();
       filter.Hue = new IntRange(hLo, hHi);
       filter.Saturation = new Range(sLo, sHi);
       filter.Luminance = new Range(lLo, lHi);
@@ -115,16 +120,53 @@ namespace Smart.Sharp.Engine.Api
       filterSequence.Add(filter);
     }
 
+    public SmartRectangle[] Animation(SmartImage smartImage, int pixelSize = 2, int threshold = 10)
+    {
+      FiltersSequence sequence = new FiltersSequence();
+      sequence.Add(Grayscale.CommonAlgorithms.BT709);
+      sequence.Add(new Pixellate(pixelSize));
+
+      Bitmap thisImage = sequence.Apply(image);
+      Bitmap thatImage = sequence.Apply(smartImage.image);
+
+      Difference difference = new Difference();
+      difference.OverlayImage = thatImage;
+      Bitmap differenceBitmap = difference.Apply(thisImage);
+
+      Threshold thresholdFilter = new Threshold(threshold);
+      Bitmap thresholdBitmap = thresholdFilter.Apply(differenceBitmap);
+
+      thresholdBitmap.Save("threshold.png");
+
+      counter.MinWidth = pixelSize * 2;
+      counter.MinHeight = pixelSize * 2;
+      counter.CoupledSizeFiltering = true;
+      counter.ProcessImage(thresholdBitmap);
+
+      return counter.GetObjectsRectangles().Select(rect => new SmartRectangle(rect)).ToArray();
+    }
+
     public SmartRectangle[] Blobs()
     {
-      BlobCounter counter = new BlobCounter();
+      counter.MinWidth = 0;
+      counter.MinHeight = 0;
+      counter.CoupledSizeFiltering = true;
       counter.ProcessImage(image);
-      return counter.GetObjectsInformation().Select(obj => new SmartRectangle(obj.Rectangle)).ToArray();
+      return counter.GetObjectsRectangles().Select(obj => new SmartRectangle(obj)).ToArray();
     }
 
     public void Save(string fileName)
     {
       image.Save(fileName);
+    }
+
+    public void DrawRectangle(SmartRectangle rectangle)
+    {
+      using (Graphics g = Graphics.FromImage(image))
+      using (Pen p = new Pen(Color.Red, 1))
+      {
+        g.DrawRectangle(p, new Rectangle(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height));
+      }
     }
 
     #endregion

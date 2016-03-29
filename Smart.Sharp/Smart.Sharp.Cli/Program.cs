@@ -42,7 +42,7 @@ namespace Smart.Sharp.Cli
       session.SessionStarted += (sender, eventArgs) =>
       {
         Script script = new Script();
-        script.Uri = ".\\testscript.lua";
+        script.Uri = ".\\animation.lua";
         script.Name = "script";
 
         session.ScriptController.Start(script);

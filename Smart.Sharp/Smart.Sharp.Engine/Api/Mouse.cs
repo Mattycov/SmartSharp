@@ -16,12 +16,12 @@ namespace Smart.Sharp.Engine.Api
 
     #region public methods
     
-    public void MoveMouse(int x, int y)
+    public void Move(int x, int y)
     {
       Session.SmartRemote.WindMouse(Session.SmartHandle, x, y);
     }
 
-    public void ClickMouse(bool left)
+    public void Click(bool left)
     {
       Point p = GetPosition();
       Session.SmartRemote.ClickMouse(Session.SmartHandle, p.X, p.Y, left);

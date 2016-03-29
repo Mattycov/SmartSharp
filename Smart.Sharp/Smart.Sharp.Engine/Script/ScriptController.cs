@@ -65,7 +65,7 @@ namespace Smart.Sharp.Engine.Script
 
     #region public methods
 
-    public void Start(Engine.Script.Script script)
+    public void Start(Script script)
     {
       string scriptString = File.ReadAllText(script.Uri);
       
