@@ -19,11 +19,10 @@ namespace Smart.Sharp.Engine.Api
 
     #region private methods
 
-    private Bitmap GetBitmapFromSession()
+    private Bitmap GetBitmap()
     {
-      
-      int width = 800;
-      int height = 600;
+      int width = 765;
+      int height = 503;
       IntPtr ptr = Session.SmartRemote.GetImageArray(Session.SmartHandle);
 
       int length = ((width * 32 + 31) / 32) * 4 * height;
@@ -31,19 +30,9 @@ namespace Smart.Sharp.Engine.Api
       Marshal.Copy(ptr, bytes, 0, length);
 
       Bitmap bmp = new Bitmap(width, height);
-
-      int i = 0;
-      for (int y = 0; y < height; y++)
-      {
-        for (int x = 0; x < width; x++)
-        {
-          int blue = bytes[i++];
-          int green = bytes[i++];
-          int red = bytes[i++];
-          i++;
-          bmp.SetPixel(x, y, Color.FromArgb(red, green, blue));
-        }
-      }
+      BitmapData data = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, bmp.PixelFormat);
+      Marshal.Copy(bytes, 0, data.Scan0, length);
+      bmp.UnlockBits(data);
       return bmp;
     }
 
@@ -58,7 +47,7 @@ namespace Smart.Sharp.Engine.Api
 
     public SmartImage GetScreen()
     {
-      return new SmartImage(FixPixelFormat(GetBitmapFromSession()));
+      return new SmartImage(FixPixelFormat(GetBitmap()));
     }
 
     #endregion

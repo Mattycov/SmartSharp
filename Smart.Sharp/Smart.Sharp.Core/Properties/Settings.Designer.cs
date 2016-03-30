@@ -86,12 +86,24 @@ namespace Smart.Sharp.Core.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string PluginFolder {
+        public string ModulesFolder {
             get {
-                return ((string)(this["PluginFolder"]));
+                return ((string)(this["ModulesFolder"]));
             }
             set {
-                this["PluginFolder"] = value;
+                this["ModulesFolder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TesseractFolder {
+            get {
+                return ((string)(this["TesseractFolder"]));
+            }
+            set {
+                this["TesseractFolder"] = value;
             }
         }
     }

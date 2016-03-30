@@ -115,10 +115,13 @@ namespace Smart.Sharp.Core.ViewModels.SessionViewModels
         MessageBox.Show("Warning", "SMART Path has not been set in Settings");
         return;
       }
+
       SessionSettings settings = new SessionSettings();
       settings.SessionType = SessionType.OSRS;
       settings.JavaPath = javaPath;
       settings.SmartPath = smartPath;
+      settings.ModulePaths = new []{ Properties.Settings.Default.ModulesFolder, Properties.Settings.Default.ScriptsFolder };
+      settings.TesseractPath = Properties.Settings.Default.TesseractFolder;
       settings.ShowConsole = false;
 
       Session session = new Session(Controller.SmartRemote, settings);

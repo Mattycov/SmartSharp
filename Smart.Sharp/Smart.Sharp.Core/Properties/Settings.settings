@@ -17,7 +17,10 @@
     <Setting Name="ScriptsFolder" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="PluginFolder" Type="System.String" Scope="User">
+    <Setting Name="ModulesFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="TesseractFolder" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

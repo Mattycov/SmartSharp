@@ -29,5 +29,10 @@ namespace Smart.Sharp.Engine.Api
       Height = rectangle.Height;
     }
 
+    public static SmartRectangle New(int x, int y, int width, int height)
+    {
+      return new SmartRectangle(x, y, width, height);
+    }
+
   }
 }

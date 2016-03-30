@@ -1,35 +1,20 @@
-﻿image = screen.getScreen ();
-sleep (60);
-change = screen.getScreen ();
+﻿fishing = require "fishing";
+login = require "login";
 
-image.beginFilter ();
-image.colorFilter (65, 148, 145, 190, 100, 255);
-image.endFilter ();
+screenShot = screen.getScreen ();
 
-change.beginFilter ();
-change.colorFilter (65, 148, 145, 190, 100, 255);
-change.endFilter ();
-
-image.save ("first.png");
-change.save ("second.png");
-
-count = 1;
-blobs = image.animation (change, 3, 10);
-
-rect = nil;
-
-for i, blob in ipairs (blobs) do
-	change.drawRectangle (blob);
+spots = fishing.fishingSpots ();
+for i, blob in ipairs (spots) do
 	targetX = blob.x + (blob.width / 2);
-	targetY = blob.Y + (blob.height / 2);
-
+	targetY = blob.y + (blob.height / 2);
 	mouse.move (targetX, targetY);
-	mouse.click (false);
 	break;
 end
 
+print(login.existingText());
 
+screenShot.drawRectangle (SmartRectangle.New (236, 96, 49, 95));
 
-change.save ("compare.png");
+screenShot.save("screenshot.png");
 
 return false;

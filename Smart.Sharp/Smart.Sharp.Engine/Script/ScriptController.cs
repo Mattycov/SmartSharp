@@ -30,33 +30,45 @@ namespace Smart.Sharp.Engine.Script
 
     #region private methods
 
-    private void RunScript(string scriptString)
+    private void RunScript(Script script)
     {
+
+      string scriptString = File.ReadAllText(script.Uri);
+
       // Register Types
       UserData.RegisterType<Mouse>();
       UserData.RegisterType<Keyboard>();
       UserData.RegisterType<Screen>();
+      UserData.RegisterType<Ocr>();
       UserData.RegisterType<SmartImage>();
       UserData.RegisterType<SmartRectangle>();
+      UserData.RegisterType<SmartPoint>();
 
       // Create Script
-      LuaScript script = new LuaScript();
+      LuaScript luaScript = new LuaScript();
+
+      SmartScriptLoader loader = new SmartScriptLoader(session.Settings.ModulePaths);
+      luaScript.Options.ScriptLoader = loader;
 
       // Create script instances
       DynValue mouseObject = UserData.Create(new Mouse(session));
       DynValue keyboardObject = UserData.Create(new Keyboard(session));
       DynValue screenObject = UserData.Create(new Screen(session));
+      DynValue ocrObject = UserData.Create(new Ocr(session));
 
-      script.Globals.Set("mouse", mouseObject);
-      script.Globals.Set("keyboard", keyboardObject);
-      script.Globals.Set("screen", screenObject);
-      script.Globals["sleep"] = (Action<int>) Thread.Sleep;
-
+      luaScript.Globals.Set("mouse", mouseObject);
+      luaScript.Globals.Set("keyboard", keyboardObject);
+      luaScript.Globals.Set("screen", screenObject);
+      luaScript.Globals.Set("ocr", ocrObject);
+      luaScript.Globals["sleep"] = (Action<int>) Thread.Sleep;
+      luaScript.Globals["SmartRectangle"] = typeof(SmartRectangle);
+      luaScript.Globals["SmartPoint"] = typeof(SmartPoint);
+      
       bool executeScript = true;
 
       while (running && executeScript)
       {
-        DynValue result = script.DoString(scriptString);
+        DynValue result = luaScript.DoString(scriptString);
         executeScript = result.Boolean;
       }
     }
@@ -67,12 +79,10 @@ namespace Smart.Sharp.Engine.Script
 
     public void Start(Script script)
     {
-      string scriptString = File.ReadAllText(script.Uri);
-      
       Stop();
       running = true;
 
-      scriptThread = new Thread(() => RunScript(scriptString));
+      scriptThread = new Thread(() => RunScript(script));
       scriptThread.Name = $"Script-{script.Name}";
       scriptThread.IsBackground = true;
       scriptThread.Start();

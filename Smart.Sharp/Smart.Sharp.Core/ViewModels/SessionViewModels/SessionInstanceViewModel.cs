@@ -30,7 +30,7 @@ namespace Smart.Sharp.Core.ViewModels.SessionViewModels
     {
       Session = session;
       Id = session.Id;
-      SessionType = session.SessionType;
+      SessionType = session.Settings.SessionType;
       StopSessionCommand = new DelegateCommand(StopSessionCommandImpl);
     }
 

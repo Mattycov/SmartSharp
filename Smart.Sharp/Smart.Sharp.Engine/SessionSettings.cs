@@ -13,6 +13,10 @@ namespace Smart.Sharp.Engine
 
     public string SmartPath { get; set; }
 
+    public string[] ModulePaths { get; set; }
+
+    public string TesseractPath { get; set; }
+
     public SessionType SessionType { get; set; }
 
     public bool ShowConsole { get; set; }

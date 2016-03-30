@@ -3,22 +3,23 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using AForge;
 using AForge.Imaging;
 using AForge.Imaging.Filters;
+using Image = System.Drawing.Image;
+using Point = System.Drawing.Point;
 
 namespace Smart.Sharp.Engine.Api
 {
   public class SmartImage
   {
 
-
-
     #region variables
 
-    private Bitmap image;
+    internal Bitmap image;
     private bool filtering;
 
     private readonly FiltersSequence filterSequence;
@@ -43,6 +44,95 @@ namespace Smart.Sharp.Engine.Api
 
     #region private methods
 
+    private int ManhattanHeuristic(SmartPoint current, SmartPoint other)
+    {
+      int dx = Math.Abs(current.X - other.X);
+      int dy = Math.Abs(current.Y - other.Y);
+      return dx + dy;
+    }
+
+    private SmartPoint[][] Cluster(SmartPoint[] points, int distance)
+    {
+      List<SmartPoint[]> result = new List<SmartPoint[]>();
+      bool[] checkedPoints = new bool[points.Length];
+      Stack<SmartPoint> active = new Stack<SmartPoint>();
+      int index = 0;
+      int distanceSqrd = distance * distance;
+
+      while (index < points.Length)
+      {
+        if (!checkedPoints[index])
+        {
+          List<SmartPoint> cluster = new List<SmartPoint>();
+          SmartPoint p = points[index];
+          cluster.Add(p);
+          checkedPoints[index] = true;
+          active.Push(p);
+          while (active.Count != 0)
+          {
+            p = active.Pop();
+            int checkedIndex = index + 1;
+            while (checkedIndex < points.Length)
+            {
+              if (!checkedPoints[checkedIndex])
+              {
+                SmartPoint pCheck = points[checkedIndex];
+                if ((pCheck.X - p.X) > distance)
+                  break;
+
+                if (ManhattanHeuristic(p, pCheck) <= distanceSqrd)
+                {
+                  active.Push(pCheck);
+                  cluster.Add(pCheck);
+                  checkedPoints[checkedIndex] = true;
+                  if (checkedIndex == (index + 1))
+                    index++;
+                }
+              }
+              checkedIndex++;
+            }
+          }
+          result.Add(cluster.ToArray());
+        }
+        index++;
+      }
+      return result.ToArray();
+    }
+
+    private SmartPoint[] PointsWithColor(Bitmap bitmap, byte red, byte green, byte blue)
+    {
+      List<SmartPoint> points = new List<SmartPoint>();
+
+      BitmapData bitmapData =
+        bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height),
+          ImageLockMode.ReadWrite, bitmap.PixelFormat);
+
+      int bytesPerPixel = Image.GetPixelFormatSize(bitmap.PixelFormat) / 8;
+      int byteCount = bitmapData.Stride * bitmap.Height;
+      byte[] pixels = new byte[byteCount];
+      IntPtr ptrFirstPixel = bitmapData.Scan0;
+      Marshal.Copy(ptrFirstPixel, pixels, 0, pixels.Length);
+      int heightInPixels = bitmapData.Height;
+      int widthInBytes = bitmapData.Width * bytesPerPixel;
+
+      for (int y = 0; y < heightInPixels - 1; y++)
+      {
+        int currentLine = y * bitmapData.Stride;
+        for (int x = 0; x < widthInBytes - 1; x = x + bytesPerPixel)
+        {
+          int pixelBlue = pixels[currentLine + x];
+          int pixelGreen = pixels[currentLine + x + 1];
+          int pixelRed = pixels[currentLine + x + 2];
+          if (pixelBlue != blue && pixelGreen != green && pixelRed != red)
+            continue;
+
+          points.Add(new SmartPoint(x, y));
+        }
+      }
+
+      bitmap.UnlockBits(bitmapData);
+      return points.ToArray();
+    }
 
     #endregion
 
@@ -85,7 +175,7 @@ namespace Smart.Sharp.Engine.Api
       filterSequence.Add(filter);
     }
 
-    public void EuclideanColorFilter(byte red, byte green, byte blue, short radius)
+    public void EuclideanColorFilter(byte red, byte green, byte blue, short radius, bool replace, byte replaceRed = 255, byte replaceGreen = 255, byte replaceBlue = 255)
     {
       if (!filtering)
         return;
@@ -93,6 +183,8 @@ namespace Smart.Sharp.Engine.Api
       EuclideanColorFiltering filter = new EuclideanColorFiltering();
       filter.CenterColor = new RGB(red, green, blue);
       filter.Radius = radius;
+      filter.FillColor = new RGB(replaceRed, replaceGreen, replaceBlue);
+      filter.FillOutside = replace;
       filterSequence.Add(filter);
     }
 
@@ -120,11 +212,33 @@ namespace Smart.Sharp.Engine.Api
       filterSequence.Add(filter);
     }
 
-    public SmartRectangle[] Animation(SmartImage smartImage, int pixelSize = 2, int threshold = 10)
+    public void GrayScale()
+    {
+      if (!filtering)
+        return;
+
+      filterSequence.Add(Grayscale.CommonAlgorithms.BT709);
+    }
+
+
+    public void Threshold(int intensity)
+    {
+      if (!filtering)
+        return;
+
+      filterSequence.Add(new Threshold(intensity));
+    }
+
+    public SmartPoint[] PointsWithColor(byte red, byte green, byte blue)
+    {
+      return PointsWithColor(image, red, green , blue);
+    }
+
+    public SmartRectangle[] PixelShift(SmartImage smartImage, int distance)
     {
       FiltersSequence sequence = new FiltersSequence();
       sequence.Add(Grayscale.CommonAlgorithms.BT709);
-      sequence.Add(new Pixellate(pixelSize));
+      sequence.Add(new Pixellate(2));
 
       Bitmap thisImage = sequence.Apply(image);
       Bitmap thatImage = sequence.Apply(smartImage.image);
@@ -133,17 +247,34 @@ namespace Smart.Sharp.Engine.Api
       difference.OverlayImage = thatImage;
       Bitmap differenceBitmap = difference.Apply(thisImage);
 
-      Threshold thresholdFilter = new Threshold(threshold);
+      Threshold thresholdFilter = new Threshold(15);
       Bitmap thresholdBitmap = thresholdFilter.Apply(differenceBitmap);
 
-      thresholdBitmap.Save("threshold.png");
+      SmartPoint[] points = PointsWithColor(thresholdBitmap, 255, 255, 255);
 
-      counter.MinWidth = pixelSize * 2;
-      counter.MinHeight = pixelSize * 2;
-      counter.CoupledSizeFiltering = true;
-      counter.ProcessImage(thresholdBitmap);
-
-      return counter.GetObjectsRectangles().Select(rect => new SmartRectangle(rect)).ToArray();
+      SmartPoint[][] clusters = Cluster(points, distance);
+      SmartRectangle[] result = new SmartRectangle[clusters.Length];
+      
+      for (int i = 0; i < clusters.Length; i++)
+      {
+        int maxX = int.MinValue;
+        int maxY = int.MinValue;
+        int minX = int.MaxValue;
+        int minY = int.MaxValue;
+        foreach (SmartPoint point in clusters[i])
+        {
+          if (point.X > maxX)
+            maxX = point.X;
+          if (point.X < minX)
+            minX = point.X;
+          if (point.Y > maxY)
+            maxY = point.Y;
+          if (point.Y < minY)
+            minY = point.Y;
+        }
+        result[i] = new SmartRectangle(minX, minY, maxX - minX, maxY - minY);
+      }
+      return result;
     }
 
     public SmartRectangle[] Blobs()

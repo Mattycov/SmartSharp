@@ -19,8 +19,10 @@ namespace Smart.Sharp.Core
 
       CheckAndMakeDirectory((Properties.Settings.Default.SmartFolder = Path.Combine(Properties.Settings.Default.SmartSharpFolder, "Smart")));
 
-      CheckAndMakeDirectory((Properties.Settings.Default.PluginFolder = Path.Combine(Properties.Settings.Default.SmartSharpFolder, "Plugin")));
+      CheckAndMakeDirectory((Properties.Settings.Default.ModulesFolder = Path.Combine(Properties.Settings.Default.SmartSharpFolder, "Modules")));
 
+      CheckAndMakeDirectory((Properties.Settings.Default.TesseractFolder = Path.Combine(Properties.Settings.Default.SmartSharpFolder, "tessdata")));
+      
       Properties.Settings.Default.Save();
 
     }

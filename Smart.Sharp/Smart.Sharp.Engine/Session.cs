@@ -31,7 +31,6 @@ namespace Smart.Sharp.Engine
     private static int sessionCount = 0;
 
     private readonly ManualResetEvent resetEvent;
-    private readonly SessionSettings settings;
 
     private Thread smartThread;
 
@@ -51,8 +50,8 @@ namespace Smart.Sharp.Engine
     public SmartRemote SmartRemote { get; private set; }
 
     public IntPtr SmartHandle { get; private set; }
-
-    public SessionType SessionType { get; private set; }
+    
+    public SessionSettings Settings { get; private set; }
 
     #endregion
 
@@ -61,8 +60,7 @@ namespace Smart.Sharp.Engine
     public Session(SmartRemote smartRemote, SessionSettings settings)
     {
       SmartRemote = smartRemote;
-      this.settings = settings;
-      SessionType = settings.SessionType;
+      Settings = settings;
       resetEvent = new ManualResetEvent(false);
       ScriptController = new ScriptController(this);
       
@@ -72,11 +70,11 @@ namespace Smart.Sharp.Engine
 
     #region private methods
 
-    private void StartSmart(SessionSettings settings)
+    private void StartSmart()
     {
-      string url = settings.SessionType == SessionType.RS3 ? "http://world37.runescape.com/" : "http://oldschool81.runescape.com/";
+      string url = Settings.SessionType == SessionType.RS3 ? "http://world37.runescape.com/" : "http://oldschool81.runescape.com/";
 
-      string javaPath = Path.Combine(settings.JavaPath, settings.ShowConsole ? "java.exe" : "javaw.exe");
+      string javaPath = Path.Combine(Settings.JavaPath, Settings.ShowConsole ? "java.exe" : "javaw.exe");
 
       int availableClients = SmartRemote.GetClients(true);
       if (availableClients > 0)
@@ -93,7 +91,7 @@ namespace Smart.Sharp.Engine
         }
       }
       if (SmartHandle == IntPtr.Zero)
-        SmartHandle = SmartRemote.SpawnClient(javaPath, settings.SmartPath, url, "", 800, 600, null, null, null, null);
+        SmartHandle = SmartRemote.SpawnClient(javaPath, Settings.SmartPath, url, "", 765, 503, null, null, null, null);
 
       OnSessionStarted(EventArgs.Empty);
 
@@ -124,7 +122,7 @@ namespace Smart.Sharp.Engine
 
     public void Start()
     {
-      smartThread = new Thread(() => StartSmart(settings));
+      smartThread = new Thread(StartSmart);
       Interlocked.Increment(ref sessionCount);
       smartThread.Name = $"SessionThread-{sessionCount}";
       smartThread.IsBackground = true;

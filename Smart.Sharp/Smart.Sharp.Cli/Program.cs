@@ -22,6 +22,8 @@ namespace Smart.Sharp.Cli
       }
       javaPath = Path.Combine(javaPath, "bin");
       string smartRemotePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "SmartSharp", "Smart");
+      string modulePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "SmartSharp", "Modules");
+      string tesseractPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "SmartSharp", "tessdata");
 
       SmartRemote remote = new SmartRemote(smartRemotePath);
 
@@ -29,6 +31,8 @@ namespace Smart.Sharp.Cli
       settings.SessionType = SessionType.OSRS;
       settings.JavaPath = javaPath;
       settings.SmartPath = smartRemotePath;
+      settings.ModulePaths = new []{modulePath};
+      settings.TesseractPath = tesseractPath;
       settings.ShowConsole = true;
 
       if (!File.Exists("testscript.lua"))
