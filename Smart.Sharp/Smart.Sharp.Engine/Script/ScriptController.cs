@@ -42,7 +42,7 @@ namespace Smart.Sharp.Engine.Script
       UserData.RegisterType<Ocr>();
       UserData.RegisterType<SmartImage>();
       UserData.RegisterType<SmartRectangle>();
-      UserData.RegisterType<SmartPoint>();
+      UserData.RegisterType<SmartPixel>();
 
       // Create Script
       LuaScript luaScript = new LuaScript();
@@ -62,7 +62,7 @@ namespace Smart.Sharp.Engine.Script
       luaScript.Globals.Set("ocr", ocrObject);
       luaScript.Globals["sleep"] = (Action<int>) Thread.Sleep;
       luaScript.Globals["SmartRectangle"] = typeof(SmartRectangle);
-      luaScript.Globals["SmartPoint"] = typeof(SmartPoint);
+      luaScript.Globals["SmartPoint"] = typeof(SmartPixel);
       
       bool executeScript = true;
 

@@ -17,6 +17,8 @@ namespace Smart.Sharp.Engine
 
     public string TesseractPath { get; set; }
 
+    public string[] FontPaths { get; set; }
+
     public SessionType SessionType { get; set; }
 
     public bool ShowConsole { get; set; }

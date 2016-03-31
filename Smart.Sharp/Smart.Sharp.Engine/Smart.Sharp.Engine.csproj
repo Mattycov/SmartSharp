@@ -20,7 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -74,8 +74,10 @@
     <Compile Include="Api\Mouse.cs" />
     <Compile Include="Api\Ocr.cs" />
     <Compile Include="Api\Screen.cs" />
+    <Compile Include="Api\SmartCharacter.cs" />
+    <Compile Include="Api\SmartFont.cs" />
     <Compile Include="Api\SmartImage.cs" />
-    <Compile Include="Api\SmartPoint.cs" />
+    <Compile Include="Api\SmartPixel.cs" />
     <Compile Include="Api\SmartRectangle.cs" />
     <Compile Include="Event\SessionEventArgs.cs" />
     <Compile Include="Script\MethodProvider.cs" />

@@ -3,6 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 using Smart.Sharp.Engine;
+using Smart.Sharp.Engine.Api;
 using Smart.Sharp.Engine.Script;
 using Smart.Sharp.Native;
 
@@ -12,6 +13,9 @@ namespace Smart.Sharp.Cli
   {
     private static void Main(string[] args)
     {
+
+      SmartFont font = SmartFont.LoadFont(@"C:\Simba\Fonts\UpChars07");
+
       string javaPath = Environment.GetEnvironmentVariable("JAVA_HOME");
       if (string.IsNullOrEmpty(javaPath))
       {

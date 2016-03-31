@@ -2,8 +2,10 @@
 
 namespace Smart.Sharp.Engine.Api
 {
-  public class SmartRectangle
+  public struct SmartRectangle
   {
+
+    #region properties
 
     public int X { get; private set; }
 
@@ -12,6 +14,10 @@ namespace Smart.Sharp.Engine.Api
     public int Width { get; private set; }
 
     public int Height { get; private set; }
+
+    #endregion
+
+    #region constructors
 
     internal SmartRectangle(int x, int y, int width, int height)
     {
@@ -33,6 +39,8 @@ namespace Smart.Sharp.Engine.Api
     {
       return new SmartRectangle(x, y, width, height);
     }
+
+    #endregion
 
   }
 }

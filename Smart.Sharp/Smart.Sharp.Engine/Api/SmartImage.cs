@@ -4,13 +4,10 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using AForge;
 using AForge.Imaging;
 using AForge.Imaging.Filters;
 using Image = System.Drawing.Image;
-using Point = System.Drawing.Point;
 
 namespace Smart.Sharp.Engine.Api
 {
@@ -29,6 +26,20 @@ namespace Smart.Sharp.Engine.Api
 
     #endregion
 
+    #region properties
+
+    public int Width
+    {
+      get { return image.Width; }
+    }
+
+    public int Height
+    {
+      get { return image.Height; }
+    }
+
+    #endregion
+
     #region constructor
 
     public SmartImage(Bitmap image)
@@ -44,93 +55,104 @@ namespace Smart.Sharp.Engine.Api
 
     #region private methods
 
-    private int ManhattanHeuristic(SmartPoint current, SmartPoint other)
+    private void ReadImage(Bitmap bitmap, Action<SmartPixel> action)
+    {
+      BitmapData bitmapData =
+        bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height),
+          ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+      
+      int byteCount = bitmapData.Stride * bitmap.Height;
+      byte[] pixels = new byte[byteCount];
+      IntPtr ptrFirstPixel = bitmapData.Scan0;
+      Marshal.Copy(ptrFirstPixel, pixels, 0, pixels.Length);
+      
+      int bytesPerPixel = Image.GetPixelFormatSize(bitmapData.PixelFormat) / 8;
+      int widthInBytes = bitmapData.Width * bytesPerPixel;
+      
+      for (int y = 0; y < bitmapData.Height; y++)
+      {
+        int currentLine = y * bitmapData.Stride;
+        int x = 0;
+        for (int xInBytes = 0; xInBytes < widthInBytes; xInBytes += bytesPerPixel, x++)
+        {
+          byte blue = pixels[currentLine + xInBytes];
+          byte green = pixels[currentLine + xInBytes + 1];
+          byte red = pixels[currentLine + xInBytes + 2];
+          SmartPixel pixel = new SmartPixel(x, y, red, green, blue);
+          action(pixel);
+        }
+      }
+      bitmap.UnlockBits(bitmapData);
+    }
+
+    private int ManhattanHeuristic(SmartPixel current, SmartPixel other)
     {
       int dx = Math.Abs(current.X - other.X);
       int dy = Math.Abs(current.Y - other.Y);
       return dx + dy;
     }
 
-    private SmartPoint[][] Cluster(SmartPoint[] points, int distance)
+    private SmartPixel[][] Cluster(SmartPixel[] pixels, int distance)
     {
-      List<SmartPoint[]> result = new List<SmartPoint[]>();
-      bool[] checkedPoints = new bool[points.Length];
-      Stack<SmartPoint> active = new Stack<SmartPoint>();
+      List<SmartPixel[]> result = new List<SmartPixel[]>();
+      bool[] checkedPoints = new bool[pixels.Length];
+      Stack<SmartPixel> active = new Stack<SmartPixel>();
       int index = 0;
       int distanceSqrd = distance * distance;
 
-      while (index < points.Length)
+      while (index < pixels.Length)
       {
-        if (!checkedPoints[index])
+        if (checkedPoints[index])
         {
-          List<SmartPoint> cluster = new List<SmartPoint>();
-          SmartPoint p = points[index];
-          cluster.Add(p);
-          checkedPoints[index] = true;
-          active.Push(p);
-          while (active.Count != 0)
-          {
-            p = active.Pop();
-            int checkedIndex = index + 1;
-            while (checkedIndex < points.Length)
-            {
-              if (!checkedPoints[checkedIndex])
-              {
-                SmartPoint pCheck = points[checkedIndex];
-                if ((pCheck.X - p.X) > distance)
-                  break;
-
-                if (ManhattanHeuristic(p, pCheck) <= distanceSqrd)
-                {
-                  active.Push(pCheck);
-                  cluster.Add(pCheck);
-                  checkedPoints[checkedIndex] = true;
-                  if (checkedIndex == (index + 1))
-                    index++;
-                }
-              }
-              checkedIndex++;
-            }
-          }
-          result.Add(cluster.ToArray());
+          index++;
+          continue;
         }
-        index++;
+
+        List<SmartPixel> cluster = new List<SmartPixel>();
+        SmartPixel p = pixels[index];
+        cluster.Add(p);
+        checkedPoints[index] = true;
+        active.Push(p);
+        while (active.Count != 0)
+        {
+          p = active.Pop();
+          int checkedIndex = index + 1;
+          while (checkedIndex < pixels.Length)
+          {
+            if (checkedPoints[checkedIndex])
+            {
+              checkedIndex++;
+              continue;
+            }
+
+            SmartPixel pCheck = pixels[checkedIndex];
+            if ((pCheck.X - p.X) > distance)
+              break;
+
+            if (ManhattanHeuristic(p, pCheck) > distanceSqrd)
+              continue;
+
+            active.Push(pCheck);
+            cluster.Add(pCheck);
+            checkedPoints[checkedIndex] = true;
+            if (checkedIndex == (index + 1))
+              index++;
+          }
+        }
+        result.Add(cluster.ToArray());
       }
       return result.ToArray();
     }
 
-    private SmartPoint[] PointsWithColor(Bitmap bitmap, byte red, byte green, byte blue)
+    private SmartPixel[] PointsWithColor(Bitmap bitmap, byte red, byte green, byte blue)
     {
-      List<SmartPoint> points = new List<SmartPoint>();
-
-      BitmapData bitmapData =
-        bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height),
-          ImageLockMode.ReadWrite, bitmap.PixelFormat);
-
-      int bytesPerPixel = Image.GetPixelFormatSize(bitmap.PixelFormat) / 8;
-      int byteCount = bitmapData.Stride * bitmap.Height;
-      byte[] pixels = new byte[byteCount];
-      IntPtr ptrFirstPixel = bitmapData.Scan0;
-      Marshal.Copy(ptrFirstPixel, pixels, 0, pixels.Length);
-      int heightInPixels = bitmapData.Height;
-      int widthInBytes = bitmapData.Width * bytesPerPixel;
-
-      for (int y = 0; y < heightInPixels - 1; y++)
+      List<SmartPixel> points = new List<SmartPixel>();
+      ReadImage(bitmap, pixel =>
       {
-        int currentLine = y * bitmapData.Stride;
-        for (int x = 0; x < widthInBytes - 1; x = x + bytesPerPixel)
-        {
-          int pixelBlue = pixels[currentLine + x];
-          int pixelGreen = pixels[currentLine + x + 1];
-          int pixelRed = pixels[currentLine + x + 2];
-          if (pixelBlue != blue && pixelGreen != green && pixelRed != red)
-            continue;
-
-          points.Add(new SmartPoint(x, y));
-        }
-      }
-
-      bitmap.UnlockBits(bitmapData);
+        if (pixel.Blue != blue || pixel.Green != green || pixel.Red != red)
+          return;
+        points.Add(pixel);
+      });
       return points.ToArray();
     }
 
@@ -175,7 +197,7 @@ namespace Smart.Sharp.Engine.Api
       filterSequence.Add(filter);
     }
 
-    public void EuclideanColorFilter(byte red, byte green, byte blue, short radius, bool replace, byte replaceRed = 255, byte replaceGreen = 255, byte replaceBlue = 255)
+    public void EuclideanColorFilter(byte red, byte green, byte blue, short radius, bool fillOutside, byte replaceRed = 255, byte replaceGreen = 255, byte replaceBlue = 255)
     {
       if (!filtering)
         return;
@@ -184,7 +206,7 @@ namespace Smart.Sharp.Engine.Api
       filter.CenterColor = new RGB(red, green, blue);
       filter.Radius = radius;
       filter.FillColor = new RGB(replaceRed, replaceGreen, replaceBlue);
-      filter.FillOutside = replace;
+      filter.FillOutside = fillOutside;
       filterSequence.Add(filter);
     }
 
@@ -229,7 +251,7 @@ namespace Smart.Sharp.Engine.Api
       filterSequence.Add(new Threshold(intensity));
     }
 
-    public SmartPoint[] PointsWithColor(byte red, byte green, byte blue)
+    public SmartPixel[] PointsWithColor(byte red, byte green, byte blue)
     {
       return PointsWithColor(image, red, green , blue);
     }
@@ -250,9 +272,9 @@ namespace Smart.Sharp.Engine.Api
       Threshold thresholdFilter = new Threshold(15);
       Bitmap thresholdBitmap = thresholdFilter.Apply(differenceBitmap);
 
-      SmartPoint[] points = PointsWithColor(thresholdBitmap, 255, 255, 255);
+      SmartPixel[] pixels = PointsWithColor(thresholdBitmap, 255, 255, 255);
 
-      SmartPoint[][] clusters = Cluster(points, distance);
+      SmartPixel[][] clusters = Cluster(pixels, distance);
       SmartRectangle[] result = new SmartRectangle[clusters.Length];
       
       for (int i = 0; i < clusters.Length; i++)
@@ -261,7 +283,7 @@ namespace Smart.Sharp.Engine.Api
         int maxY = int.MinValue;
         int minX = int.MaxValue;
         int minY = int.MaxValue;
-        foreach (SmartPoint point in clusters[i])
+        foreach (SmartPixel point in clusters[i])
         {
           if (point.X > maxX)
             maxX = point.X;
@@ -284,6 +306,11 @@ namespace Smart.Sharp.Engine.Api
       counter.CoupledSizeFiltering = true;
       counter.ProcessImage(image);
       return counter.GetObjectsRectangles().Select(obj => new SmartRectangle(obj)).ToArray();
+    }
+
+    public void ReadImage(Action<SmartPixel> action)
+    {
+      ReadImage(image, action);
     }
 
     public void Save(string fileName)

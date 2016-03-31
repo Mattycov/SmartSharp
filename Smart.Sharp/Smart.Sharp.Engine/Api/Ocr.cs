@@ -15,9 +15,14 @@ namespace Smart.Sharp.Engine.Api
     {
     }
 
-    public string Text(SmartImage image)
+    public void Init()
     {
-      string result = string.Empty;
+      
+    }
+
+    public string Tesseract(SmartImage image)
+    {
+      string result;
       image.BeginFilter();
       // Convert other colours
       image.EuclideanColorFilter(222, 222, 0, 15, false);
@@ -28,14 +33,14 @@ namespace Smart.Sharp.Engine.Api
       image.Save("ocr.png");
 
       using (TesseractEngine engine = new TesseractEngine(Session.Settings.TesseractPath, "eng", EngineMode.CubeOnly))
-      {
-        using (Page page = engine.Process(image.image))
-        {
-          result = page.GetText();
-        }
+      using (Page page = engine.Process(image.image))
+      { 
+        result = page.GetText();
       }
       return result;
     }
+
+
 
   }
 }
