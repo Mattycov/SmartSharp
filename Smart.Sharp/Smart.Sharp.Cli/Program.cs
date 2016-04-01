@@ -14,8 +14,7 @@ namespace Smart.Sharp.Cli
     private static void Main(string[] args)
     {
 
-      SmartFont font = SmartFont.LoadFont(@"C:\Simba\Fonts\UpChars07");
-
+      
       string javaPath = Environment.GetEnvironmentVariable("JAVA_HOME");
       if (string.IsNullOrEmpty(javaPath))
       {
@@ -37,6 +36,7 @@ namespace Smart.Sharp.Cli
       settings.SmartPath = smartRemotePath;
       settings.ModulePaths = new []{modulePath};
       settings.TesseractPath = tesseractPath;
+      settings.FontPaths = new[] {@"C:\Simba\Fonts\UpChars07", @"C:\Simba\Fonts\UpChars07_s" };
       settings.ShowConsole = true;
 
       if (!File.Exists("testscript.lua"))

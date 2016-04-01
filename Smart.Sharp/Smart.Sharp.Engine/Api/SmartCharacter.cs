@@ -44,7 +44,10 @@ namespace Smart.Sharp.Engine.Api
       int[,] pixelColours = new int[image.Width, image.Height];
       image.ReadImage(pixel =>
       {
-        pixelColours[pixel.X, pixel.Y] = ((pixel.Red << 16) | (pixel.Green << 8) | pixel.Blue);
+        if (pixel.Red == 255)
+          pixelColours[pixel.X, pixel.Y] = ((pixel.Red << 16) | (pixel.Green << 8) | pixel.Blue);
+        else
+          pixelColours[pixel.X, pixel.Y] = 0;
       });
       return new SmartCharacter(c, pixelColours);
     }
@@ -53,7 +56,23 @@ namespace Smart.Sharp.Engine.Api
     {
       Character = c;
       this.colours = colours;
-      Console.WriteLine(colours.Rank);
+    }
+
+    #endregion
+
+    #region public methods
+
+    public bool Match(SmartImage image)
+    {
+      bool result = true;
+      SmartCharacter self = this;
+      image.ReadImage(pixel =>
+      {
+        if (self[pixel.X, pixel.Y] != ((pixel.Red << 16) | (pixel.Green << 8) | pixel.Blue))
+          result = false;
+      });
+
+      return result;
     }
 
     #endregion
