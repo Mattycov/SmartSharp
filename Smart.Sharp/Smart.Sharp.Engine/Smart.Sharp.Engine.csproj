@@ -70,15 +70,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\GLXWrapper.cs" />
     <Compile Include="Api\Keyboard.cs" />
     <Compile Include="Api\Mouse.cs" />
     <Compile Include="Api\Ocr.cs" />
     <Compile Include="Api\Screen.cs" />
-    <Compile Include="Api\SmartCharacter.cs" />
-    <Compile Include="Api\SmartFont.cs" />
-    <Compile Include="Api\SmartImage.cs" />
-    <Compile Include="Api\SmartPixel.cs" />
-    <Compile Include="Api\SmartRectangle.cs" />
+    <Compile Include="Api\Text\SmartCharacter.cs" />
+    <Compile Include="Api\Text\SmartFont.cs" />
+    <Compile Include="Api\Image\SmartImage.cs" />
+    <Compile Include="Api\Image\SmartPixel.cs" />
+    <Compile Include="Api\Primitives\SmartRectangle.cs" />
     <Compile Include="Event\SessionEventArgs.cs" />
     <Compile Include="Script\MethodProvider.cs" />
     <Compile Include="Script\Script.cs" />
@@ -112,6 +113,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

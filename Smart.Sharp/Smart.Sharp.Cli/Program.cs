@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Smart.Sharp.Engine;
 using Smart.Sharp.Engine.Api;
 using Smart.Sharp.Engine.Script;
 using Smart.Sharp.Native;
+using Smart.Sharp.Native.OpenGL;
 
 namespace Smart.Sharp.Cli
 {
@@ -14,7 +17,27 @@ namespace Smart.Sharp.Cli
     private static void Main(string[] args)
     {
 
-      
+      /*GLX glx = new GLX(@"C:\Users\mcollinge\SmartSharp\Smart\GLX.dll");
+      Process[] processes = Process.GetProcessesByName("HotlineGL");
+      Process dodProcess = processes.FirstOrDefault();
+      if (dodProcess == null)
+      {
+        Console.WriteLine("Could not find process");
+        Console.WriteLine("Press any key to quite...");
+        Console.ReadKey();
+        return;
+      }
+
+      glx.Setup(dodProcess.Id);
+      glx.MapHooks(dodProcess.Id);
+
+      Rectangle view = glx.Viewport();
+      Console.WriteLine(glx.Textures().Length);
+      Console.ReadKey();*/
+
+
+
+
       string javaPath = Environment.GetEnvironmentVariable("JAVA_HOME");
       if (string.IsNullOrEmpty(javaPath))
       {
@@ -28,16 +51,20 @@ namespace Smart.Sharp.Cli
       string modulePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "SmartSharp", "Modules");
       string tesseractPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "SmartSharp", "tessdata");
 
-      SmartRemote remote = new SmartRemote(smartRemotePath);
+      Native.SmartRemote remote = new Native.SmartRemote(smartRemotePath);
+      GLX glx = new GLX(@"C:\Users\mcollinge\SmartSharp\Smart\GLX.dll");
+
+      string[] fonts = Directory.GetDirectories(@"C:\Users\mcollinge\SmartSharp\Fonts");
 
       SessionSettings settings = new SessionSettings();
-      settings.SessionType = SessionType.OSRS;
+      settings.SessionType = SessionType.RS3;
       settings.JavaPath = javaPath;
       settings.SmartPath = smartRemotePath;
       settings.ModulePaths = new []{modulePath};
       settings.TesseractPath = tesseractPath;
-      settings.FontPaths = new[] {@"C:\Simba\Fonts\UpChars07", @"C:\Simba\Fonts\UpChars07_s" };
+      settings.FontPaths = fonts;
       settings.ShowConsole = true;
+      settings.Plugins = "OpenGL32.dll";
 
       if (!File.Exists("testscript.lua"))
       {
@@ -49,9 +76,20 @@ namespace Smart.Sharp.Cli
       Session session = new Session(remote, settings);
       session.SessionStarted += (sender, eventArgs) =>
       {
+        string scriptFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "SmartSharp", "Scripts");
+        Console.WriteLine("Select a script");
+        string[] scripts = Directory.GetFiles(scriptFolder);
+        for (int i = 0; i < scripts.Length; i++)
+        {
+          Console.WriteLine($"{i}: {Path.GetFileNameWithoutExtension(scripts[i])}");
+        }
+        string line = Console.ReadLine();
+        int scriptNumber;
+        int.TryParse(line, out scriptNumber);
+        
         Script script = new Script();
-        script.Uri = ".\\animation.lua";
-        script.Name = "script";
+        script.Uri = scripts[scriptNumber];
+        script.Name = Path.GetFileNameWithoutExtension(scripts[scriptNumber]);
 
         session.ScriptController.Start(script);
       };
@@ -65,6 +103,8 @@ namespace Smart.Sharp.Cli
 
       Console.WriteLine("Press any key to quit...");
       Console.ReadKey();
+
+      glx.Image().Save("test.png");
       
       session.Stop();
 
@@ -72,33 +112,6 @@ namespace Smart.Sharp.Cli
       Console.WriteLine("Press any key to continue...");
       Console.ReadKey();
 
-    }
-
-    private static void SaveIntPtrToBitmap(IntPtr ptr)
-    {
-      int width = 800;
-      int height = 600;
-
-      int length = ((width * 32 + 31) / 32) * 4 * height;
-      byte[] bytes = new byte[length];
-      Marshal.Copy(ptr, bytes, 0, length);
-
-      Bitmap bmp = new Bitmap(width, height);
-
-      int i = 0;
-      for (int y = 0; y < height; y++)
-      {
-        for (int x = 0; x < width; x++)
-        {
-          int blue = bytes[i++];
-          int green = bytes[i++];
-          int red = bytes[i++];
-          i++;
-          bmp.SetPixel(x, y, Color.FromArgb(red, green, blue));
-        }
-      }
-
-      bmp.Save($"smart-{DateTime.Now.ToFileTime()}.png");
     }
 
   }

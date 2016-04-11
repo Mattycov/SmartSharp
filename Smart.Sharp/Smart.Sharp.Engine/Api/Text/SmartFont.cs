@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Smart.Sharp.Engine.Api.Image;
 
-namespace Smart.Sharp.Engine.Api
+namespace Smart.Sharp.Engine.Api.Text
 {
   public class SmartFont : IEnumerable<SmartCharacter>
   {

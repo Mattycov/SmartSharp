@@ -3,6 +3,9 @@ using System.IO;
 using System.Threading;
 using MoonSharp.Interpreter;
 using Smart.Sharp.Engine.Api;
+using Smart.Sharp.Engine.Api.Image;
+using Smart.Sharp.Engine.Api.Primitives;
+using Smart.Sharp.Native.OpenGL;
 using LuaScript = MoonSharp.Interpreter.Script;
 
 namespace Smart.Sharp.Engine.Script
@@ -43,6 +46,11 @@ namespace Smart.Sharp.Engine.Script
       UserData.RegisterType<SmartImage>();
       UserData.RegisterType<SmartRectangle>();
       UserData.RegisterType<SmartPixel>();
+      UserData.RegisterType<GLXWrapper>();
+      UserData.RegisterType<GLModel>();
+      UserData.RegisterType<GLTexture>();
+      UserData.RegisterType<GLFont>();
+      UserData.RegisterType<GLMatrices>();
 
       // Create Script
       LuaScript luaScript = new LuaScript();
@@ -50,20 +58,24 @@ namespace Smart.Sharp.Engine.Script
       SmartScriptLoader loader = new SmartScriptLoader(session.Settings.ModulePaths);
       luaScript.Options.ScriptLoader = loader;
 
-      // Create script instances
+      // Create script instances)
+
       DynValue mouseObject = UserData.Create(new Mouse(session));
       DynValue keyboardObject = UserData.Create(new Keyboard(session));
       DynValue screenObject = UserData.Create(new Screen(session));
       DynValue ocrObject = UserData.Create(new Ocr(session));
+      DynValue glxObject = UserData.Create(new GLXWrapper(session, new GLX(Path.Combine(session.Settings.SmartPath, "GLX.dll"))));
+      
 
       luaScript.Globals.Set("mouse", mouseObject);
       luaScript.Globals.Set("keyboard", keyboardObject);
       luaScript.Globals.Set("screen", screenObject);
       luaScript.Globals.Set("ocr", ocrObject);
+      luaScript.Globals.Set("glx", glxObject);
       luaScript.Globals["sleep"] = (Action<int>) Thread.Sleep;
       luaScript.Globals["SmartRectangle"] = typeof(SmartRectangle);
       luaScript.Globals["SmartPixel"] = typeof(SmartPixel);
-      
+
       bool executeScript = true;
 
       while (running && executeScript)

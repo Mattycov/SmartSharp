@@ -23,5 +23,7 @@ namespace Smart.Sharp.Engine
 
     public bool ShowConsole { get; set; }
 
+    public string Plugins { get; set; }
+
   }
 }

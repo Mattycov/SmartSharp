@@ -47,7 +47,7 @@ namespace Smart.Sharp.Engine
       get { return SmartHandle != IntPtr.Zero; }
     }
 
-    public SmartRemote SmartRemote { get; private set; }
+    public Native.SmartRemote SmartRemote { get; private set; }
 
     public IntPtr SmartHandle { get; private set; }
     
@@ -57,7 +57,7 @@ namespace Smart.Sharp.Engine
 
     #region constructor
 
-    public Session(SmartRemote smartRemote, SessionSettings settings)
+    public Session(Native.SmartRemote smartRemote, SessionSettings settings)
     {
       SmartRemote = smartRemote;
       Settings = settings;
@@ -91,7 +91,7 @@ namespace Smart.Sharp.Engine
         }
       }
       if (SmartHandle == IntPtr.Zero)
-        SmartHandle = SmartRemote.SpawnClient(javaPath, Settings.SmartPath, url, "", 765, 503, null, null, null, null);
+        SmartHandle = SmartRemote.SpawnClient(javaPath, Settings.SmartPath, url, "", 800, 600, null, null, null, Settings.Plugins);
 
       OnSessionStarted(EventArgs.Empty);
 

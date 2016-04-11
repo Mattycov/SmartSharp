@@ -36,10 +36,16 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OpenGL\GLFont.cs" />
+    <Compile Include="OpenGL\GLModel.cs" />
+    <Compile Include="OpenGL\GLTexture.cs" />
+    <Compile Include="OpenGL\GLX.cs" />
     <Compile Include="Kernel32.cs" />
+    <Compile Include="OpenGL\GLMatrices.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SmartRemote.cs" />
   </ItemGroup>

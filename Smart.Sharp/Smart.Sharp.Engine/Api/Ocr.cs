@@ -4,6 +4,9 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Smart.Sharp.Engine.Api.Image;
+using Smart.Sharp.Engine.Api.Primitives;
+using Smart.Sharp.Engine.Api.Text;
 using Smart.Sharp.Engine.Script;
 using Tesseract;
 
@@ -63,10 +66,18 @@ namespace Smart.Sharp.Engine.Api
     public string UpText(SmartImage image, string fontName)
     {
       image.ReadImage(pixel => NormalisePixel(pixel));
-      SmartPixel[] pointsWithColour = image.PointsWithColor(255, 255, 255);
+      SmartPixel[] whitePoints = image.PointsWithColor(255, 255, 255);
+      SmartPixel[] redPoints = image.PointsWithColor(255, 0, 0);
       int left = int.MaxValue;
       int right = int.MinValue;
-      foreach (SmartPixel pixel in pointsWithColour)
+      foreach (SmartPixel pixel in whitePoints)
+      {
+        if (pixel.X < left)
+          left = pixel.X;
+        if (pixel.X > right)
+          right = pixel.X;
+      }
+      foreach (SmartPixel pixel in redPoints)
       {
         if (pixel.X < left)
           left = pixel.X;
@@ -75,7 +86,6 @@ namespace Smart.Sharp.Engine.Api
       }
       SmartRectangle rect = SmartRectangle.New(left - 1, 0, right - left + 3, image.Height);
       SmartImage words = image.Child(rect);
-      words.Save("text.png");
       StringBuilder resultBuilder = new StringBuilder();
       SmartFont font = fonts.FirstOrDefault(fnt => fnt.Name == fontName);
       if (font == null)
@@ -103,7 +113,7 @@ namespace Smart.Sharp.Engine.Api
       }
 
       // Find rest of the letters
-      while (x < words.Width && found)
+      while (x < words.Width)
       {
         found = false;
         foreach (SmartCharacter character in font)
@@ -117,6 +127,8 @@ namespace Smart.Sharp.Engine.Api
           found = true;
           break;
         }
+        if (!found)
+          x++;
       }
       return resultBuilder.ToString();
     }

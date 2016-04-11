@@ -7,14 +7,16 @@ using System.Runtime.InteropServices;
 using AForge;
 using AForge.Imaging;
 using AForge.Imaging.Filters;
-using Image = System.Drawing.Image;
+using Smart.Sharp.Engine.Api.Primitives;
 
-namespace Smart.Sharp.Engine.Api
+namespace Smart.Sharp.Engine.Api.Image
 {
   public class SmartImage
   {
 
     #region variables
+
+    private readonly static Font DefaultFont = new Font(new FontFamily("Courier New"), 10);
 
     internal Bitmap image;
     private bool filtering;
@@ -22,7 +24,6 @@ namespace Smart.Sharp.Engine.Api
     private readonly FiltersSequence filterSequence;
     private readonly Crop cropper;
     private readonly BlobCounter counter;
-
 
     #endregion
 
@@ -51,6 +52,13 @@ namespace Smart.Sharp.Engine.Api
       counter = new BlobCounter();
     }
 
+    public static SmartImage Blank(int width, int height)
+    {
+      Bitmap bitmap = new Bitmap(800, 600, PixelFormat.Format32bppArgb);
+      bitmap.MakeTransparent();
+      return new SmartImage(bitmap);
+    }
+
     #endregion
 
     #region private methods
@@ -66,7 +74,7 @@ namespace Smart.Sharp.Engine.Api
       IntPtr ptrFirstPixel = bitmapData.Scan0;
       Marshal.Copy(ptrFirstPixel, pixels, 0, pixels.Length);
       
-      int bytesPerPixel = Image.GetPixelFormatSize(bitmapData.PixelFormat) / 8;
+      int bytesPerPixel = System.Drawing.Image.GetPixelFormatSize(bitmapData.PixelFormat) / 8;
       int widthInBytes = bitmapData.Width * bytesPerPixel;
       
       for (int y = 0; y < bitmapData.Height; y++)
@@ -96,7 +104,7 @@ namespace Smart.Sharp.Engine.Api
       IntPtr ptrFirstPixel = bitmapData.Scan0;
       Marshal.Copy(ptrFirstPixel, pixels, 0, pixels.Length);
 
-      int bytesPerPixel = Image.GetPixelFormatSize(bitmapData.PixelFormat) / 8;
+      int bytesPerPixel = System.Drawing.Image.GetPixelFormatSize(bitmapData.PixelFormat) / 8;
       int widthInBytes = bitmapData.Width * bytesPerPixel;
 
       for (int y = 0; y < bitmapData.Height; y++)
@@ -157,7 +165,7 @@ namespace Smart.Sharp.Engine.Api
 
     public SmartImage Child(SmartRectangle rectangle)
     {
-      return Child(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);
+      return Child((int) Math.Round(rectangle.X), (int)Math.Round(rectangle.Y), (int)Math.Round(rectangle.Width), (int)Math.Round(rectangle.Height));
     }
 
     public void ColorFilter(int rLo, int rHi, int gLo, int gHi, int bLo, int bHi)
@@ -278,14 +286,35 @@ namespace Smart.Sharp.Engine.Api
       image.Save(fileName);
     }
 
-    public void DrawRectangle(SmartRectangle rectangle)
+    #region drawing
+
+    public void DrawLine(SmartPixel start, SmartPixel end, int colour)
     {
       using (Graphics g = Graphics.FromImage(image))
-      using (Pen p = new Pen(Color.Red, 1))
+      using (Pen p = new Pen(Color.FromArgb(colour), 1))
       {
-        g.DrawRectangle(p, new Rectangle(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height));
+        g.DrawLine(p, start.X, start.Y, end.X, end.Y);
       }
     }
+
+    public void DrawRectangle(SmartRectangle rectangle, int colour)
+    {
+      using (Graphics g = Graphics.FromImage(image))
+      using (Pen p = new Pen(Color.FromArgb(colour), 1))
+      {
+        g.DrawRectangle(p, new Rectangle((int)Math.Round(rectangle.X), (int)Math.Round(rectangle.Y), (int)Math.Round(rectangle.Width), (int)Math.Round(rectangle.Height)));
+      }
+    }
+
+    public void DrawString(string s, SmartPixel location, int colour)
+    {
+      using (Graphics g = Graphics.FromImage(image))
+      {
+        g.DrawString(s, DefaultFont, new SolidBrush(Color.FromArgb(colour)), location.X, location.Y);
+      }
+    }
+
+    #endregion
 
     #endregion
 

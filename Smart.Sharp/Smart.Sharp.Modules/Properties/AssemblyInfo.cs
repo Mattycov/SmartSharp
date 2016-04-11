@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Smart.Sharp.Engine.Tests")]
+[assembly: AssemblyTitle("Smart.Sharp.Modules")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Smart.Sharp.Engine.Tests")]
+[assembly: AssemblyProduct("Smart.Sharp.Modules")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("e5a239d3-5d0b-4b70-b148-edb1ed06e3f6")]
+[assembly: Guid("7e3f21a0-078b-46fc-9cd9-75cae92995ae")]
 
 // Version information for an assembly consists of the following four values:
 //

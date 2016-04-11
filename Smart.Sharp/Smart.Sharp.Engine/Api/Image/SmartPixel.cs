@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using Smart.Sharp.Engine.Api.Primitives;
 
-namespace Smart.Sharp.Engine.Api
+namespace Smart.Sharp.Engine.Api.Image
 {
   public struct SmartPixel
   {

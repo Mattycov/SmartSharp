@@ -10,7 +10,7 @@ namespace Smart.Sharp.Core.Controller
   internal interface IAppController
   {
     
-    SmartRemote SmartRemote { get; }
+    Native.SmartRemote SmartRemote { get; }
 
   }
 }

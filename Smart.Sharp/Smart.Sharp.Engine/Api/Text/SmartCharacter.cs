@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Smart.Sharp.Engine.Api.Image;
 
-namespace Smart.Sharp.Engine.Api
+namespace Smart.Sharp.Engine.Api.Text
 {
   public class SmartCharacter
   {

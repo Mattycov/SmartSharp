@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using Smart.Sharp.Engine.Api.Image;
 using Smart.Sharp.Engine.Script;
 
 namespace Smart.Sharp.Engine.Api
@@ -19,11 +20,10 @@ namespace Smart.Sharp.Engine.Api
 
     #region private methods
 
-    private Bitmap GetBitmap()
+    private Bitmap GetImage(IntPtr ptr)
     {
-      int width = 765;
-      int height = 503;
-      IntPtr ptr = Session.SmartRemote.GetImageArray(Session.SmartHandle);
+      int width = 800;
+      int height = 600;
 
       int length = ((width * 32 + 31) / 32) * 4 * height;
       byte[] bytes = new byte[length];
@@ -36,9 +36,23 @@ namespace Smart.Sharp.Engine.Api
       return bmp;
     }
 
-    private Bitmap FixPixelFormat(Bitmap image)
+    private void SetImage(Bitmap bmp, IntPtr ptr)
     {
-      return image.Clone(new Rectangle(0, 0, image.Width, image.Height), PixelFormat.Format24bppRgb);
+      int width = 800;
+      int height = 600;
+
+      int length = ((width * 32 + 31) / 32) * 4 * height;
+      byte[] bytes = new byte[length];
+      BitmapData data = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, bmp.PixelFormat);
+      Marshal.Copy(data.Scan0, bytes, 0, length);
+      
+      Marshal.Copy(bytes, 0, ptr, length);
+      bmp.UnlockBits(data);
+    }
+
+    private Bitmap FixPixelFormat(Bitmap image, PixelFormat format)
+    {
+      return image.Clone(new Rectangle(0, 0, image.Width, image.Height), format);
     }
 
     #endregion
@@ -47,7 +61,17 @@ namespace Smart.Sharp.Engine.Api
 
     public SmartImage GetScreen()
     {
-      return new SmartImage(FixPixelFormat(GetBitmap()));
+      return new SmartImage(FixPixelFormat(GetImage(Session.SmartRemote.GetImageArray(Session.SmartHandle)), PixelFormat.Format24bppRgb));
+    }
+
+    public SmartImage GetDebug()
+    {
+      return new SmartImage(FixPixelFormat(GetImage(Session.SmartRemote.GetDebugArray(Session.SmartHandle)), PixelFormat.Format24bppRgb));
+    }
+
+    public void SetDebug(SmartImage image)
+    {
+      SetImage(FixPixelFormat(image.image, PixelFormat.Format32bppArgb), Session.SmartRemote.GetDebugArray(Session.SmartHandle));
     }
 
     #endregion

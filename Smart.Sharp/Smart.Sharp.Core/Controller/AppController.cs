@@ -10,11 +10,11 @@ namespace Smart.Sharp.Core.Controller
   public class AppController : IAppController
   {
 
-    public SmartRemote SmartRemote { get; }
+    public Native.SmartRemote SmartRemote { get; }
 
     public AppController()
     {
-      SmartRemote = new SmartRemote(Properties.Settings.Default.SmartFolder);
+      SmartRemote = new Native.SmartRemote(Properties.Settings.Default.SmartFolder);
     }
     
   }
